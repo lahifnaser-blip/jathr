@@ -1,4 +1,4 @@
-const CACHE = "jathr-v1";
+const CACHE = "jathr-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -9,10 +9,22 @@ self.addEventListener("activate", e => {
     Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", e => {
-  const url = new URL(e.request.url);
   if (e.request.method !== "GET") return;
-  // نتائج البحث: من الشبكة أولًا ثم من الذاكرة إن انقطع الاتصال
-  if (/wiktionary\.org|alquran\.cloud|quran\.com/.test(url.host)) {
+  const url = new URL(e.request.url);
+
+  // نصوص المعاجم: من الذاكرة أولًا، فهي ثابتة لا تتغيّر
+  if (/cdn\.jsdelivr\.net|raw\.githubusercontent\.com/.test(url.host)) {
+    e.respondWith(
+      caches.match(e.request).then(hit => hit || fetch(e.request).then(r => {
+        const copy = r.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return r;
+      }))
+    );
+    return;
+  }
+  // القرآن وويكاموس والخطوط: من الشبكة أولًا ثم الذاكرة
+  if (/wiktionary\.org|alquran\.cloud|quran\.com|fonts\.(googleapis|gstatic)\.com/.test(url.host)) {
     e.respondWith(
       fetch(e.request).then(r => {
         const copy = r.clone();
