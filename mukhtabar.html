@@ -850,33 +850,51 @@ async function loadSurasOnce(){
   if(!SURAS) SURAS = [];
   return SURAS;
 }
+function resetFilters(){
+  ["qPos","qCase","qTense","qMood","qVoice","qForm","qDeriv"].forEach(i => F(i).selectedIndex = 0);
+  F("qRoot").value = ""; F("qSura").value = "";
+}
 async function parseSmart(text){
-  const notes = [];
+  resetFilters();                       // كل عبارة جديدة تبدأ من صفحة نظيفة، لا تُبقي قيود عبارة سابقة
+  const notes = [], unclear = [];
   const t = text.trim();
-  if(!t) return notes;
+  if(!t) return { notes, unclear };
   const suras = await loadSurasOnce();
   for(const s of suras){
     if(t.includes(s.name) || t.includes(s.name.replace("ال",""))){
       F("qSura").value = String(s.id); notes.push("السورة: " + s.name + " (" + s.id + ")"); break;
     }
   }
-  const CASE_KW = [["مرفوع","NOM"],["منصوب","ACC"],["مجرور","GEN"]];
-  for(const [kw, code] of CASE_KW) if(t.includes(kw)){ F("qCase").value = code; notes.push("الحالة: " + kw); break; }
-  if(t.includes("مبني للمجهول") || t.includes("للمجهول")){ F("qVoice").value = "PASS"; notes.push("البناء: للمجهول"); }
-  else if(t.includes("للمعلوم")){ F("qVoice").value = "ACTV"; notes.push("البناء: للمعلوم"); }
-  if(t.includes("ماضٍ") || t.includes("ماضي")){ F("qTense").value = "PERF"; notes.push("الزمن: ماضٍ"); }
-  else if(t.includes("مضارع")){ F("qTense").value = "IMPF"; notes.push("الزمن: مضارع"); }
-  else if(t.includes("أمر")){ F("qTense").value = "IMPV"; notes.push("الزمن: أمر"); }
+  const CASE_KW = [
+    [["مرفوع","مرفوعة","المرفوع","المرفوعة"], "NOM", "مرفوع"],
+    [["منصوب","منصوبة","المنصوب","المنصوبة"], "ACC", "منصوب"],
+    [["مجرور","مجرورة","المجرور","المجرورة"], "GEN", "مجرور"],
+  ];
+  for(const [kws, code, label] of CASE_KW) if(kws.some(k => t.includes(k))){
+    F("qCase").value = code; notes.push("الحالة: " + label); break; }
+  if(/مبنيّ?ة?\s*للمجهول|للمجهول/.test(t)){ F("qVoice").value = "PASS"; notes.push("البناء: للمجهول"); }
+  else if(/مبنيّ?ة?\s*للمعلوم|للمعلوم/.test(t)){ F("qVoice").value = "ACTV"; notes.push("البناء: للمعلوم"); }
+  if(/ماضٍ|ماضي|الماضي|الماضية/.test(t)){ F("qTense").value = "PERF"; notes.push("الزمن: ماضٍ"); }
+  else if(/مضارع|المضارع|المضارعة/.test(t)){ F("qTense").value = "IMPF"; notes.push("الزمن: مضارع"); }
+  else if(/فعل\s*الأمر|أفعال\s*الأمر|\bالأمر\b/.test(t)){ F("qTense").value = "IMPV"; notes.push("الزمن: أمر"); }
   if(t.includes("اسم فاعل")){ F("qDeriv").value = "ACT|PCPL"; notes.push("الصيغة: اسم فاعل"); }
   else if(t.includes("اسم مفعول")){ F("qDeriv").value = "PASS|PCPL"; notes.push("الصيغة: اسم مفعول"); }
   else if(t.includes("مصدر")){ F("qDeriv").value = "VN"; notes.push("الصيغة: مصدر"); }
   for(const [word, code] of Object.entries(FORM_WORDS)) if(t.includes("الوزن " + word) || t.includes("وزن " + word)){
     F("qForm").value = code; notes.push("الوزن: " + word); break; }
-  const posWords = [["فعل","V"],["اسم علم","PN"],["اسم إشارة","DEM"],["اسم موصول","REL"],["ضمير","PRON"],["صفة","ADJ"],["اسم","N"]];
-  for(const [kw, code] of posWords) if(t.includes(kw)){ F("qPos").value = code; notes.push("النوع: " + kw); break; }
-  const rm = t.match(/جذر\s*[:\s]?\s*([\u0621-\u064A]{2,4})/);
+  const posWords = [
+    [["اسم علم"], "PN"], [["اسم إشارة"], "DEM"], [["اسم موصول"], "REL"],
+    [["ضمير","ضمائر","الضمائر"], "PRON"], [["صفة","صفات","الصفات"], "ADJ"],
+    [["فعل","أفعال","الأفعال","الفعل"], "V"],
+    [["اسم","أسماء","الأسماء","الاسم"], "N"],
+  ];
+  for(const [kws, code] of posWords) if(kws.some(k => t.includes(k))){
+    F("qPos").value = code; notes.push("النوع: " + kws[0]); break; }
+  const rm = t.match(/جذر(?:ه|ها)?\s*[:\s]?\s*([\u0621-\u064A]{2,4})/);
   if(rm){ F("qRoot").value = rm[1]; notes.push("الجذر: " + rm[1]); }
-  return notes;
+  if(/مبنيّ?ة?(?!\s*للم)/.test(t) && !/للمجهول|للمعلوم/.test(t))
+    unclear.push("كلمة «مبنيّ» وحدها لا تتحوّل إلى قيد — اذكر «مبنيّ للمجهول» أو «مبنيّ للمعلوم» صراحةً، فالبناء المطلق لا تسجّله بيانات هذا المعجم.");
+  return { notes, unclear };
 }
 async function runSearch(){
   await load();
@@ -987,11 +1005,14 @@ F("qsSaveAyah").onclick = () => {
 };
 
 F("run").onclick = runSearch;
-F("reset").onclick = () => { ["qPos","qCase","qTense","qMood","qVoice","qForm","qDeriv"].forEach(i => F(i).selectedIndex = 0);
-  F("qRoot").value = ""; F("qSura").value = ""; F("results").innerHTML = ""; F("hits").textContent = ""; F("parsed").innerHTML = ""; };
+F("reset").onclick = () => { resetFilters();
+  F("results").innerHTML = ""; F("hits").textContent = ""; F("parsed").innerHTML = ""; };
 F("smartGo").onclick = async () => {
-  const notes = await parseSmart(F("smartQ").value);
-  F("parsed").innerHTML = notes.length ? "فهمت: " + notes.map(n => "<b>" + esc(n) + "</b>").join("، ") : "لم أستخرج قيودًا من العبارة — عدِّل الحقول يدويًّا.";
+  const { notes, unclear } = await parseSmart(F("smartQ").value);
+  let html = notes.length ? "فهمت: " + notes.map(n => "<b>" + esc(n) + "</b>").join("، ")
+    : "لم أستخرج قيودًا واضحة من العبارة — راجع الحقول أدناه يدويًّا.";
+  if(unclear.length) html += '<div style="color:var(--zunjufr);margin-top:.3rem">' + unclear.map(esc).join("<br>") + '</div>';
+  F("parsed").innerHTML = html;
   await runSearch();
 };
 
