@@ -1,11 +1,11 @@
-/* ══════════ بُنيان — ترويسة موحَّدة، بنّيّ ذهبيّ فاتح، لكل الصفحات ══════════ */
+/* ══════════ بُنيان — ترويسة موحَّدة، بنّيّ ذهبيّ صريح، لكل الصفحات ══════════ */
 
 header.grand{
-  background: linear-gradient(180deg, #E9D2A2 0%, #D3AE72 100%);
-  color: #3A2A10;
+  background: linear-gradient(180deg, #93783E 0%, #7C6430 100%);
+  color: #FFFFFF;
   padding: calc(1.7rem + env(safe-area-inset-top)) 1.2rem 1.15rem;
-  border-bottom: 3px solid #9C7A2E;
-  box-shadow: 0 3px 14px rgba(120,90,30,.22);
+  border-bottom: 3px solid #5C4A20;
+  box-shadow: 0 3px 14px rgba(60,45,15,.28);
   position: sticky;
   top: 0;
   z-index: 9;
@@ -15,27 +15,29 @@ header.grand .hd-top{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .1rem;
+  gap: .15rem;
 }
 header.grand .logo{
   font-family: "Amiri", serif;
+  font-weight: 700;
   font-size: clamp(2.15rem, 7vw, 3.1rem);
-  color: #6B1520;
-  letter-spacing: .1em;
+  color: #FFFFFF;
+  letter-spacing: .08em;
   line-height: 1.05;
-  text-shadow: 0 1px 0 rgba(255,255,255,.25);
+  text-shadow: 0 1px 3px rgba(0,0,0,.25);
 }
 header.grand .sub{
-  font-size: .82rem;
-  color: #4A3512;
-  letter-spacing: .16em;
-  margin-top: .15rem;
+  font-size: .84rem;
+  font-weight: 700;
+  color: #FFF6E0;
+  letter-spacing: .14em;
+  margin-top: .2rem;
 }
 header.grand .rule{
   width: 5.5rem;
-  height: 1px;
-  background: rgba(107,21,32,.4);
-  margin: .65rem auto 0;
+  height: 2px;
+  background: rgba(255,255,255,.55);
+  margin: .7rem auto 0;
   position: relative;
 }
 header.grand .rule::before{
@@ -44,55 +46,59 @@ header.grand .rule::before{
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
-  background: #DFC08A;
-  color: #6B1520;
-  font-size: .55rem;
+  background: #86693A;
+  color: #FFFFFF;
+  font-size: .6rem;
   padding: 0 .5rem;
 }
 header.grand .hd-nav{
   display: flex;
   justify-content: center;
   gap: 1.15rem;
-  margin-top: .85rem;
+  margin-top: .9rem;
   flex-wrap: wrap;
 }
 header.grand .hd-nav a{
-  font-size: .82rem;
-  color: #6B1520;
+  font-size: .86rem;
+  font-weight: 700;
+  color: #FFFFFF;
   text-decoration: none;
-  border-bottom: 1px solid rgba(107,21,32,.4);
+  border-bottom: 2px solid rgba(255,255,255,.55);
   padding: .2rem 0;
   min-height: 24px;
   display: inline-flex;
   align-items: center;
-  transition: border-color .15s;
+  transition: border-color .15s, opacity .15s;
 }
 header.grand .hd-nav a:hover{
-  border-bottom-color: #6B1520;
+  border-bottom-color: #FFFFFF;
+  opacity: .9;
 }
 header.grand .hd-nav .count{
-  color: #553A14;
-  font-size: .78rem;
+  color: #FFF6E0;
+  font-weight: 700;
+  font-size: .8rem;
   display: inline-flex;
   align-items: center;
   min-height: 24px;
 }
 header.grand .tagline{
   display: block;
-  font-size: .73rem;
-  color: #553A14;
-  margin-top: .7rem;
-  line-height: 1.75;
+  font-size: .76rem;
+  font-weight: 600;
+  color: #F3E6C4;
+  margin-top: .75rem;
+  line-height: 1.8;
   max-width: 34rem;
   margin-inline: auto;
 }
 header.grand .tagline b{
-  color: #6B1520;
-  font-weight: 600;
+  color: #FFFFFF;
+  font-weight: 800;
 }
 @media (max-width: 480px){
   header.grand{ padding-top: calc(1.4rem + env(safe-area-inset-top)); }
-  header.grand .logo{ font-size: 1.95rem; letter-spacing: .07em; }
+  header.grand .logo{ font-size: 1.95rem; letter-spacing: .06em; }
   header.grand .hd-nav{ gap: .8rem; }
 }
 @media print{
