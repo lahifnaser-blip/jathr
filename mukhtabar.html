@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>بُنيان — المختبر اللغويّ</title>
 <meta name="theme-color" content="#EAE2CE" />
+<link rel="manifest" href="./mukhtabar.webmanifest" />
+<link rel="apple-touch-icon" href="./icon-lab-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="المختبر" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" />
 <style>
   *,*::before,*::after{box-sizing:border-box}
@@ -90,7 +94,26 @@
   .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem}
   .fld{display:grid;gap:.25rem}
   .fld label{font-size:.72rem;color:var(--khafeef)}
-  @media (max-width:560px){ .three{grid-template-columns:1fr 1fr} .seg{grid-template-columns:4.5rem 1fr} }
+  @media (max-width:560px){ .three{grid-template-columns:1fr 1fr} .seg{grid-template-columns:4.5rem 1fr}
+    header .sub{display:none} header a{margin-inline-start:.7rem} }
+
+  /* ——— زخرفة الخلفية ——— */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23B08A32' stroke-width='1' opacity='0.5'%3E%3Crect x='16' y='16' width='32' height='32'/%3E%3Crect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='4'/%3E%3C/g%3E%3C/svg%3E");background-size:64px 64px;opacity:.05}
+  body::after{content:"";position:fixed;z-index:0;pointer-events:none;
+    left:50%;transform:translateX(-50%);bottom:2%;
+    width:min(62vmin,420px);height:min(34vmin,230px);
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 230'%3E%3Cg fill='none' stroke='%23B08A32' stroke-width='2.2' opacity='0.9'%3E%3Cpath d='M210 58 C168 26 96 22 44 38 L44 184 C96 168 168 172 210 200'/%3E%3Cpath d='M210 58 C252 26 324 22 376 38 L376 184 C324 168 252 172 210 200'/%3E%3Cpath d='M210 58 L210 200'/%3E%3Cg stroke-width='1.2'%3E%3Cpath d='M74 72 L176 62 M74 96 L176 86 M74 120 L176 110 M74 144 L150 136'/%3E%3Cpath d='M244 62 L346 72 M244 86 L346 96 M244 110 L346 120 M270 136 L346 144'/%3E%3C/g%3E%3Cpath d='M210 18 l7 12 13 3 -9 10 2 14 -13 -6 -13 6 2 -14 -9 -10 13 -3 z'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;opacity:.11}
+  header,main{position:relative;z-index:1}
+  .tagline{font-size:.72rem;color:var(--khafeef);line-height:1.7;
+    flex-basis:100%;margin-top:.15rem}
+  .tagline b{color:var(--zunjufr);font-weight:500}
+  .copyright{position:relative;z-index:1;max-width:900px;margin:2.6rem auto 0;
+    padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    border-top:1px solid var(--dhahab);text-align:center;
+    font-size:.74rem;color:var(--khafeef);line-height:2}
+  .copyright .amiri{font-family:"Amiri",serif;font-size:1.05rem;color:var(--midad);display:block}
+  .copyright .en{letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -100,6 +123,7 @@
   <span style="flex:1"></span>
   <a href="./">جَذْر</a>
   <a href="./bunyan.html">محرِّر التقدير</a>
+  <span class="tagline">هذا التطبيق الفريد من عمل <b>د. محمد دركوشي</b> — خدمةً للقرآن العظيم واللغة العربية</span>
 </header>
 
 <main>
@@ -533,5 +557,9 @@ const p = new URLSearchParams(location.search).get("a");
 const m0 = p && p.match(/(\d+):(\d+)/);
 goto(m0 ? +m0[1] : 2, m0 ? +m0[2] : 255);
 </script>
+<div class="copyright">
+  <span class="amiri">وما توفيقي إلا بالله</span>
+  © حقوق النشر محفوظة — <span class="en">Dr. Mohamed Darkoushi</span>
+</div>
 </body>
 </html>
