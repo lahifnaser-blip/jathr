@@ -396,9 +396,13 @@ let treeMode = "svg";
 async function loadTree(s){
   if(TREE[s]) return TREE[s];
   say("تُجلب شجرة السورة…");
-  const r = await fetch("./tree/" + String(s).padStart(3,"0") + ".json");
-  if(!r.ok){ say("لم أجد ملفّ الشجرة — ارفع مجلّد tree إلى المستودع."); throw new Error("tree"); }
-  TREE[s] = await r.json(); say("");
+  const name = String(s).padStart(3,"0") + ".json";
+  let data = null;
+  for(const path of ["./tree/" + name, "./" + name]){        // داخل المجلّد أو في الجذر
+    try { const r = await fetch(path); if(r.ok){ data = await r.json(); break; } } catch(e){}
+  }
+  if(!data){ say("لم أجد ملفّ شجرة هذه السورة."); throw new Error("tree"); }
+  TREE[s] = data; say("");
   return TREE[s];
 }
 function sentencesOf(data, v){
