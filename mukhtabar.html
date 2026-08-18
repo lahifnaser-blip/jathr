@@ -72,6 +72,19 @@
   .hit p{font-family:"Amiri",serif;font-size:1.2rem;line-height:2.05;margin:.2rem 0 0}
   .hit .hl{color:var(--zunjufr);font-weight:700}
   .hint{font-size:.75rem;color:var(--khafeef);line-height:1.75;margin:.5rem 0 0}
+  .tree{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;
+        padding:.6rem;margin-top:.6rem;overflow-x:auto}
+  .tree svg{display:block;min-width:100%}
+  .tw{font-family:"Amiri",serif;font-size:19px;fill:var(--midad)}
+  .tw.imp{fill:var(--zumurrud)}
+  .tl{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:10.5px;fill:var(--zunjufr)}
+  .tp{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:9px;fill:var(--khafeef)}
+  .arc{fill:none;stroke:var(--dhahab);stroke-width:1.1}
+  .arc.imp{stroke-dasharray:3 3;stroke:var(--zumurrud)}
+  .lin{border-inline-start:2px solid var(--waraq3);padding-inline-start:.8rem;margin-bottom:.55rem}
+  .lin b{font-family:"Amiri",serif;font-size:1.2rem;font-weight:400}
+  .lin .r{font-size:.8rem;color:var(--zunjufr)}
+  .lin .d{font-size:.76rem;color:var(--khafeef);line-height:1.8}
   .note{margin-top:1.5rem;padding:.7rem .85rem;border:1px dashed var(--waraq3);border-radius:3px;
         font-size:.75rem;line-height:1.85;color:var(--khafeef)}
   .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem}
@@ -111,6 +124,14 @@
        عليها موضع مدوَّن في طبقة المحذوف والمقدَّر.</p>
 
     <div id="panel"></div>
+
+    <div class="row" style="margin-top:1rem">
+      <button id="treeBtn">أظهر شجرة الإعراب</button>
+      <button id="linBtn" hidden>العرض الخطّيّ</button>
+      <button id="svgBtn" hidden>العرض الشجريّ</button>
+      <span class="sub" id="treeMeta"></span>
+    </div>
+    <div id="treeBox"></div>
 
     <div id="taqdirBox"></div>
   </section>
@@ -155,7 +176,7 @@
   <div class="note">
     التحليل الصرفيّ من <a class="link" href="http://corpus.quran.com" target="_blank" rel="noreferrer">Quranic Arabic Corpus</a>
     (رخصة GPL) بترجمة عربيّة للمصطلحات. طبقة المحذوف والمقدَّر مقروءة من محرِّرك على هذا الجهاز نفسه،
-    وتظهر هنا حال حفظها هناك. الشجرة النحويّة البصريّة تحتاج خطوة واحدة منك ذكرتُها في المحادثة.
+    وتظهر هنا حال حفظها هناك. والشجرة النحويّة من <a class="link" href="https://github.com/NoorBayan/Quranic" target="_blank" rel="noreferrer">NoorBayan/Quranic</a> برخصة MIT.
   </div>
 </main>
 
@@ -342,6 +363,77 @@ async function goto(s, v){
   if(!DATA.verses.has(s + ":" + v)){ say("لا توجد آية " + s + ":" + v); return; }
   cur = { s, v, w:1 }; F("ref").value = s + ":" + v;
   say(""); drawAyah(); drawPanel();
+  F("treeBox").innerHTML = ""; F("treeMeta").textContent = "";
+}
+
+/* ——— شجرة الإعراب: بيانات NoorBayan/Quranic برخصة MIT ——— */
+const TREE = {};                 // رقم السورة → بيانات
+let treeMode = "svg";
+
+async function loadTree(s){
+  if(TREE[s]) return TREE[s];
+  say("تُجلب شجرة السورة…");
+  const r = await fetch("./tree/" + String(s).padStart(3,"0") + ".json");
+  if(!r.ok){ say("لم أجد ملفّ الشجرة — ارفع مجلّد tree إلى المستودع."); throw new Error("tree"); }
+  TREE[s] = await r.json(); say("");
+  return TREE[s];
+}
+function sentencesOf(data, v){
+  return data.sents.filter(st => st.toks.some(t => t.v === v));
+}
+function svgTree(toks){
+  const PAD = 26, GAP = 16, BASE_H = 26;
+  const wid = t => Math.max(46, (t.u || "").length * 11 + 16);
+  let total = PAD * 2; toks.forEach(t => total += wid(t) + GAP);
+  const W = Math.max(total, 320);
+  // من اليمين إلى اليسار
+  let x = W - PAD, pos = {};
+  toks.forEach(t => { const w = wid(t); pos[t.t] = x - w / 2; x -= w + GAP; });
+  let maxLvl = 1;
+  const arcs = toks.map(t => {
+    if(t.h === t.t || pos[t.h] === undefined || !t.r || t.r === "root") return "";
+    const x1 = pos[t.t], x2 = pos[t.h], d = Math.abs(toks.findIndex(k => k.t === t.t) - toks.findIndex(k => k.t === t.h));
+    const lvl = Math.min(4, d); maxLvl = Math.max(maxLvl, lvl);
+    const h = 22 + lvl * 20, mx = (x1 + x2) / 2;
+    return '<path class="arc' + (t.x ? " imp" : "") + '" d="M ' + x1 + ' 0 C ' + x1 + ' ' + (-h)
+      + ', ' + x2 + ' ' + (-h) + ', ' + x2 + ' 0" transform="translate(0,' + (28 + maxLvl * 20) + ')" />'
+      + '<text class="tl" x="' + mx + '" y="' + (28 + maxLvl * 20 - h * 0.72) + '" text-anchor="middle">'
+      + esc(t.r) + '</text>';
+  }).join("");
+  const top = 28 + maxLvl * 20;
+  const words = toks.map(t =>
+    '<text class="tw' + (t.x ? " imp" : "") + '" x="' + pos[t.t] + '" y="' + (top + 24)
+    + '" text-anchor="middle">' + esc(t.x ? "⟨مقدَّر⟩" : t.u) + '</text>'
+    + '<text class="tp" x="' + pos[t.t] + '" y="' + (top + 40) + '" text-anchor="middle">'
+    + esc([t.p, t.c === "NOM" ? "مرفوع" : t.c === "ACC" ? "منصوب" : t.c === "GEN" ? "مجرور" : ""]
+        .filter(Boolean).join(" · ")) + '</text>').join("");
+  return '<svg viewBox="0 0 ' + W + ' ' + (top + 52) + '" width="' + W + '" height="' + (top + 52) + '">'
+    + arcs + words + '</svg>';
+}
+function linearTree(toks){
+  const by = {}; toks.forEach(t => by[t.t] = t);
+  return toks.filter(t => t.r).map(t => {
+    const head = by[t.h];
+    const cas = t.c === "NOM" ? "مرفوع" : t.c === "ACC" ? "منصوب" : t.c === "GEN" ? "مجرور" : t.c || "";
+    return '<div class="lin"><b>' + esc(t.x ? "⟨مقدَّر⟩" : t.u) + '</b> '
+      + '<span class="r">' + esc(t.r === "root" ? "عمدة الجملة" : t.r) + '</span>'
+      + '<div class="d">' + esc([t.p, cas].filter(Boolean).join("، "))
+      + (head && head.t !== t.t && t.r !== "root" ? " — متعلّق بـ «" + esc(head.x ? "مقدَّر" : head.u) + "»" : "")
+      + (t.k ? " · جذره " + esc(t.k) : "")
+      + (t.g ? " · داخل مركّب " + esc(t.gt || t.g) : "") + '</div></div>';
+  }).join("");
+}
+async function drawTree(){
+  let data;
+  try { data = await loadTree(cur.s); }
+  catch(e){ F("treeBox").innerHTML = '<p class="hint">مجلّد tree غير مرفوع بعد.</p>'; return; }
+  const sents = sentencesOf(data, cur.v);
+  if(!sents.length){ F("treeBox").innerHTML = '<p class="hint">لا شجرة لهذه الآية.</p>'; return; }
+  F("treeMeta").textContent = sents.length + " جملة نحويّة";
+  F("treeBox").innerHTML = sents.map(st =>
+    '<div class="tree">' + (treeMode === "svg" ? svgTree(st.toks) : linearTree(st.toks)) + '</div>').join("");
+  F("linBtn").hidden = treeMode === "lin";
+  F("svgBtn").hidden = treeMode === "svg";
 }
 
 /* ——— البحث النحويّ العكسيّ ——— */
@@ -398,6 +490,9 @@ F("go").onclick = () => {
 F("ref").addEventListener("keydown", e => { if(e.key === "Enter") F("go").click(); });
 F("next").onclick = () => goto(cur.s, cur.v + 1);
 F("prev").onclick = () => cur.v > 1 ? goto(cur.s, cur.v - 1) : goto(Math.max(1, cur.s - 1), 1);
+F("treeBtn").onclick = drawTree;
+F("linBtn").onclick = () => { treeMode = "lin"; drawTree(); };
+F("svgBtn").onclick = () => { treeMode = "svg"; drawTree(); };
 F("run").onclick = runSearch;
 F("reset").onclick = () => { ["qPos","qCase","qTense","qMood","qVoice","qForm","qDeriv"].forEach(i => F(i).selectedIndex = 0);
   F("qRoot").value = ""; F("qSura").value = ""; F("results").innerHTML = ""; F("hits").textContent = ""; };
