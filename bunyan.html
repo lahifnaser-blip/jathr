@@ -125,11 +125,23 @@
     <p class="muted" id="hint" style="text-align:center; margin:.4rem 0 0"></p>
   </div>
 
-  <!-- ②  بيانات التقدير -->
-  <h2 class="sect">التقدير</h2>
+  <!-- ②  نوع المدخل وبياناته -->
+  <h2 class="sect">نوع المدخل</h2>
+  <div class="grid one">
+    <div>
+      <label for="kind">ما الذي تُدوِّنه؟</label>
+      <select id="kind">
+        <option value="تقدير">محذوف ومقدَّر — عنصر غائب من اللفظ تقتضيه الصنعة</option>
+        <option value="بلاغة">لمسة بلاغيّة عامة — التفات، قصر، تقديم وتأخير، تضمين… (لا حذف بالضرورة)</option>
+      </select>
+      <p class="muted" style="margin-top:.3rem">اختيارك هنا يغيّر تسمية الحقول أدناه فقط، والتخزين والتصدير واحد.</p>
+    </div>
+  </div>
+
+  <h2 class="sect" id="secTaqdir">التقدير</h2>
   <div class="grid">
     <div>
-      <label for="text">النصّ المقدَّر (يُكتب خارج النصّ القرآني)</label>
+      <label for="text" id="lblText">النصّ المقدَّر (يُكتب خارج النصّ القرآني)</label>
       <input id="text" placeholder="مثال: أُذكُرْ" />
     </div>
     <div>
@@ -141,7 +153,7 @@
       </select>
     </div>
     <div>
-      <label for="type">نوع المحذوف</label>
+      <label for="type" id="lblType">نوع المحذوف</label>
       <select id="type"></select>
     </div>
     <div>
@@ -238,6 +250,31 @@ const KEY = "bunyan:entries";
 const ANWA = ["مبتدأ","خبر","فعل","فاعل","مفعول به","مضاف","مضاف إليه","صفة","موصوف","جواب الشرط",
   "جواب القسم","متعلَّق الجار والمجرور","حرف الجرّ","معطوف","معطوف عليه","اسم كان","خبر كان",
   "اسم إنّ","خبر إنّ","حال","تمييز","مستثنى منه","جملة مقول القول","أن المصدرية","القول","أخرى"];
+const BALAGHA_TYPES = ["الالتفات","القصر","الفصل والوصل","التقديم والتأخير","التضمين","التنازع",
+  "الاشتغال","الإيجاز بالحذف","الإطناب","التشبيه","الاستعارة","الكناية","المجاز المرسل",
+  "الطباق","المقابلة","الجناس","السجع","أخرى"];
+function applyKind(){
+  const k = $("kind").value;
+  if(k === "بلاغة"){
+    $("secTaqdir").textContent = "اللمسة البلاغيّة";
+    $("lblText").textContent = "البيان (وصف اللمسة بإيجاز)";
+    $("text").placeholder = "مثال: الانتقال من الغيبة إلى الخطاب لتقريب المعنى";
+    $("lblType").textContent = "نوع اللمسة";
+    if($("type").dataset.kind !== "بلاغة"){
+      $("type").innerHTML = BALAGHA_TYPES.map(t => '<option>' + t + '</option>').join("");
+      $("type").dataset.kind = "بلاغة";
+    }
+  } else {
+    $("secTaqdir").textContent = "التقدير";
+    $("lblText").textContent = "النصّ المقدَّر (يُكتب خارج النصّ القرآني)";
+    $("text").placeholder = "مثال: أُذكُرْ";
+    $("lblType").textContent = "نوع المحذوف";
+    if($("type").dataset.kind !== "تقدير"){
+      $("type").innerHTML = ANWA.map(t => '<option>' + t + '</option>').join("");
+      $("type").dataset.kind = "تقدير";
+    }
+  }
+}
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $ = id => document.getElementById(id);
 let entries = [], suras = [], words = [], selIdx = -1, editId = null;
@@ -321,6 +358,7 @@ function preview(){
 function collect(){
   return {
     id: editId || (Date.now() + "" + Math.floor(Math.random()*1000)),
+    kind: $("kind").value,
     sura: +$("sura").value,
     suraName: (suras.find(x => x.id === +$("sura").value) || {}).name || "",
     aya: +$("aya").value,
@@ -355,7 +393,7 @@ function clearForm(keepAyah){
   editId = null; $("editing").textContent = "";
   ["text","sayer","source","evidence","alt","balagha"].forEach(k => $(k).value = "");
   $("degree").value = "واجب"; $("school").value = ""; $("status").value = "مسودة";
-  $("place").value = "before"; $("type").selectedIndex = 0;
+  $("place").value = "before"; $("kind").value = "تقدير"; applyKind(); $("type").selectedIndex = 0;
   if(!keepAyah){ selIdx = -1; drawAyah(); }
   preview();
 }
@@ -365,6 +403,7 @@ function edit(id){
   $("sura").value = e.sura; $("aya").value = e.aya;
   openAyah().then(() => {
     selIdx = e.wordIndex; drawAyah();
+    $("kind").value = e.kind || "تقدير"; applyKind();
     ["text","sayer","source","evidence","alt","balagha"].forEach(k => $(k).value = e[k] || "");
     $("place").value = e.place; $("type").value = e.type; $("degree").value = e.degree;
     $("school").value = e.school || ""; $("status").value = e.status;
@@ -390,9 +429,12 @@ function draw(){
     return;
   }
   const cls = d => d === "واجب" ? "wajib" : (d === "جائز" ? "jaiz" : "khilaf");
+  const siblings = e => entries.filter(x => x.sura === e.sura && x.aya === e.aya && x.wordIndex === e.wordIndex).length;
   $("list").innerHTML = rows.map(e =>
     '<div class="entry"><div class="top">'
     + '<span class="ref">' + esc(e.suraName || ("سورة " + e.sura)) + " — الآية " + e.aya + '</span>'
+    + ((e.kind || "تقدير") === "بلاغة" ? '<span class="pill khilaf">لمسة بلاغيّة</span>' : "")
+    + (siblings(e) > 1 ? '<span class="pill khilaf">أحد ' + siblings(e) + ' أوجه — خلاف نحويّ</span>' : "")
     + '<span class="pill ' + cls(e.degree) + '">' + esc(e.degree) + '</span>'
     + '<span class="pill">' + esc(e.type) + '</span>'
     + (e.status === "مراجَع" ? '<span class="pill jaiz">مراجَع</span>' : '<span class="pill">مسودة</span>')
@@ -426,8 +468,8 @@ $("expJson").onclick = () => {
 };
 $("expCsv").onclick = () => {
   if(!entries.length) return toast("لا مدخلات بعد");
-  const cols = ["sura","suraName","aya","word","place","text","type","degree","sayer","school","source","evidence","alt","balagha","status","updated"];
-  const head = ["السورة","اسم السورة","الآية","الكلمة","الموضع","المقدَّر","النوع","الدرجة","القائل","المذهب","المصدر","الدليل","بلا تقدير","البلاغة","الحالة","التاريخ"];
+  const cols = ["kind","sura","suraName","aya","word","place","text","type","degree","sayer","school","source","evidence","alt","balagha","status","updated"];
+  const head = ["نوع المدخل","السورة","اسم السورة","الآية","الكلمة","الموضع","المقدَّر/البيان","النوع","الدرجة","القائل","المذهب","المصدر","الدليل","بلا تقدير","البلاغة","الحالة","التاريخ"];
   const q = v => '"' + String(v ?? "").replace(/"/g,'""') + '"';
   download("bunyan-" + new Date().toISOString().slice(0,10) + ".csv",
     [head.map(q).join(","), ...entries.map(e => cols.map(c => q(e[c])).join(","))].join("\n"), "text/csv");
@@ -449,6 +491,8 @@ $("impFile").onchange = async e => {
 
 /* ——— الربط ——— */
 $("type").innerHTML = ANWA.map(t => '<option>' + t + '</option>').join("");
+$("type").dataset.kind = "تقدير";
+$("kind").onchange = applyKind;
 $("open").onclick = openAyah;
 $("next").onclick = () => { $("aya").value = (+$("aya").value || 0) + 1; openAyah(); };
 $("prev").onclick = () => { $("aya").value = Math.max(1, (+$("aya").value || 2) - 1); openAyah(); };

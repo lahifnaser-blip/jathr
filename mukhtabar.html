@@ -12,55 +12,137 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" />
 <style>
   *,*::before,*::after{box-sizing:border-box}
-  :root{--waraq:#EAE2CE;--waraq2:#F7F2E4;--waraq3:#E1D8C0;--midad:#1C1A15;--khafeef:#6A6355;
-        --zunjufr:#A1222C;--zumurrud:#0F544C;--dhahab:#B08A32}
+  :root{--waraq:#EAE2CE;--waraq2:#F7F2E4;--waraq3:#E1D8C0;--midad:#1C1A15;--khafeef:#544E42;
+        --zunjufr:#A1222C;--zumurrud:#0F544C;--dhahab:#B08A32;
+        --c-noun:#1B5E86;--c-verb:#0F544C;--c-particle:#8A6A18}
   html,body{margin:0;background:var(--waraq)}
   body{color:var(--midad);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;
        padding-bottom:4rem;-webkit-tap-highlight-color:transparent}
   header{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;
     padding:calc(.9rem + env(safe-area-inset-top)) 1.2rem .8rem;
     border-bottom:1px solid var(--waraq3);box-shadow:0 1px 0 rgba(176,138,50,.35);
-    position:sticky;top:0;z-index:9;background:rgba(234,226,206,.95);backdrop-filter:blur(6px)}
+    position:sticky;top:0;z-index:9;background:rgba(234,226,206,.97);backdrop-filter:blur(6px)}
   .logo{font-family:"Amiri",serif;font-size:1.55rem;color:var(--zunjufr);line-height:1}
   .sub{font-size:.72rem;color:var(--khafeef)}
-  header a{font-size:.75rem;color:var(--zumurrud);text-decoration:none;border-bottom:1px solid var(--dhahab)}
-  main{max-width:900px;margin:0 auto;padding:0 1rem}
+  header a{font-size:.75rem;color:var(--zumurrud);text-decoration:none;border-bottom:1px solid var(--dhahab);
+    padding:.2rem 0;min-height:24px;display:inline-flex;align-items:center}
+  main{max-width:1180px;margin:0 auto;padding:0 1rem}
   .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
   .tabs{margin-top:1.1rem;gap:.35rem}
-  .tab{font-family:inherit;font-size:.85rem;cursor:pointer;padding:.45rem .9rem;border-radius:3px;
-       background:transparent;border:1px solid var(--waraq3);color:var(--khafeef)}
+  .tab{font-family:inherit;font-size:.85rem;cursor:pointer;padding:.5rem .9rem;border-radius:3px;
+       background:transparent;border:1px solid var(--waraq3);color:var(--khafeef);min-height:24px}
   .tab[aria-selected="true"]{background:var(--waraq2);color:var(--midad);border-color:var(--midad);
        box-shadow:inset 0 -2px 0 var(--zunjufr)}
   input,select{font-family:inherit;font-size:.9rem;color:var(--midad);background:var(--waraq2);
-       border:1px solid var(--waraq3);border-radius:3px;padding:.45rem .6rem}
+       border:1px solid var(--waraq3);border-radius:3px;padding:.5rem .6rem;min-height:24px}
   input:focus,select:focus{outline:2px solid var(--zumurrud);outline-offset:1px}
   .ref{width:7.5rem;font-family:"Amiri",serif;font-size:1.15rem;text-align:center}
   button{font-family:inherit;font-size:.85rem;cursor:pointer;border-radius:3px;
-    border:1px solid var(--waraq3);background:var(--waraq2);color:var(--midad);padding:.45rem .8rem}
+    border:1px solid var(--waraq3);background:var(--waraq2);color:var(--midad);padding:.5rem .8rem;min-height:24px}
   button:hover{border-color:var(--zumurrud);color:var(--zumurrud)}
   button.main{background:var(--zumurrud);color:#F7F2E4;border-color:var(--zumurrud)}
+  button.danger{color:var(--zunjufr);border-color:#E0BDB5}
+  button.mini{padding:.32rem .55rem;font-size:.74rem}
+  .segbtns{display:inline-flex;border:1px solid var(--waraq3);border-radius:3px;overflow:hidden}
+  .segbtns button{border:none;border-radius:0;background:var(--waraq2);padding:.4rem .7rem;font-size:.76rem}
+  .segbtns button+button{border-inline-start:1px solid var(--waraq3)}
+  .segbtns button[aria-pressed="true"]{background:var(--zumurrud);color:#F7F2E4}
   .sect{font-size:.72rem;letter-spacing:.14em;color:var(--khafeef);
     margin:1.6rem 0 .7rem;display:flex;align-items:center;gap:.6rem}
   .sect::after{content:"";flex:1;height:1px;background:var(--waraq3)}
   .status{font-size:.75rem;color:var(--khafeef);min-height:1.2em;margin-top:.4rem}
+
+  /* ——— هيكل الآية واللوحة ——— */
+  .stageWrap{display:flex;flex-direction:column;gap:.9rem;margin-top:.6rem}
+  .stageCol{min-width:0}
+  .panelCol{min-width:0}
+  @media (min-width:920px){
+    .stageWrap{flex-direction:row-reverse;align-items:flex-start}
+    .stageCol{flex:1.15;min-width:0}
+    .panelCol{flex:1;min-width:0;position:sticky;top:5.2rem}
+  }
   .ayah{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;
-    padding:1rem .9rem;margin-top:.5rem;line-height:2.7;text-align:center}
-  .w{font-family:"Amiri",serif;font-size:1.5rem;background:none;border:none;
-     padding:.05rem .25rem;border-radius:3px;cursor:pointer;color:var(--midad)}
+    padding:1rem .9rem;line-height:2.9;text-align:center}
+  .stageCol .ayah{margin-top:0}
+  .w{font-family:"Amiri",serif;font-size:1.5rem;background:none;border-bottom:3px solid transparent;
+     padding:.05rem .25rem;border-radius:3px;cursor:pointer;color:var(--midad);min-height:24px}
   .w:hover{background:#EFE6CE}
-  .w.sel{background:rgba(15,84,76,.1);box-shadow:inset 0 -2px 0 var(--zumurrud);color:var(--zumurrud)}
-  .w.has{border-bottom:2px dotted var(--zunjufr)}
-  .panel{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;padding:.9rem;margin-top:.6rem}
-  .kalima{font-family:"Amiri",serif;font-size:1.9rem;color:var(--zunjufr);text-align:center;margin:.1rem 0 .6rem}
+  .w.pos-n{color:var(--c-noun)} .w.pos-v{color:var(--c-verb)} .w.pos-p{color:var(--c-particle)}
+  .w.sel{background:rgba(15,84,76,.12);border-bottom-color:var(--zumurrud)}
+  .w.has{box-shadow:inset 0 -2px 0 0 var(--dhahab)}
+  .legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--khafeef);margin-top:.5rem}
+  .legend span::before{content:"●";margin-inline-end:.3rem}
+  .legend .n::before{color:var(--c-noun)} .legend .v::before{color:var(--c-verb)} .legend .p::before{color:var(--c-particle)}
+
+  .stageMode{margin-top:.7rem}
+  .roleMode{margin-inline-start:auto}
+  .quickstrip{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
+
+  /* ——— لوحة الكلمة ——— */
+  .panel{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;overflow:hidden}
+  .panel .kalima{font-family:"Amiri",serif;font-size:2rem;text-align:center;padding:.9rem .9rem .3rem;margin:0}
+  .panel .kalima.pos-n{color:var(--c-noun)} .panel .kalima.pos-v{color:var(--c-verb)} .panel .kalima.pos-p{color:var(--c-particle)}
+  .wtabs{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--waraq3);border-bottom:1px solid var(--waraq3);
+    background:var(--waraq)}
+  .wtabs button{flex:1;min-width:5.2rem;border:none;border-radius:0;background:transparent;font-size:.76rem;
+    padding:.55rem .3rem;color:var(--khafeef);border-inline-end:1px solid var(--waraq3)}
+  .wtabs button:last-child{border-inline-end:none}
+  .wtabs button[aria-pressed="true"]{background:var(--waraq2);color:var(--zunjufr);font-weight:600}
+  .panelBody{padding:.9rem}
   .seg{display:grid;grid-template-columns:5.5rem 1fr;gap:.6rem;padding:.5rem 0;
        border-top:1px solid var(--waraq3);align-items:baseline}
+  .seg:first-child{border-top:none}
   .seg .part{font-family:"Amiri",serif;font-size:1.25rem;color:var(--zumurrud);text-align:center}
   .seg .kind{font-size:.65rem;color:var(--khafeef);display:block;font-family:inherit}
   .seg .val{font-size:.9rem;line-height:1.9}
   .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.3rem}
-  .chip{font-size:.72rem;padding:.15rem .45rem;border-radius:2px;border:1px solid var(--waraq3);color:var(--khafeef)}
+  .chip{font-size:.72rem;padding:.2rem .5rem;border-radius:2px;border:1px solid var(--waraq3);color:var(--khafeef);min-height:24px;display:inline-flex;align-items:center}
   .chip.k{color:var(--zunjufr);border-color:rgba(161,34,44,.35)}
+  .chip.case-NOM{border-bottom:2px solid var(--zumurrud)}
+  .chip.case-ACC{border-bottom:2px dashed var(--zunjufr)}
+  .chip.case-GEN{border-bottom:2px dotted var(--dhahab)}
   .link{font-size:.78rem;color:var(--zumurrud);text-decoration:none;border-bottom:1px solid var(--dhahab)}
+  .morph{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;padding:.9rem;background:var(--waraq);
+    border-bottom:1px solid var(--waraq3)}
+  .morph .blk{font-family:"Amiri",serif;font-size:1.15rem;padding:.35rem .6rem;border-radius:3px;
+    border:1px solid var(--waraq3);background:var(--waraq2);text-align:center}
+  .morph .blk small{display:block;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:.6rem;color:var(--khafeef)}
+  .morph .blk.pfx{border-color:var(--dhahab)} .morph .blk.stm{border-color:var(--zumurrud);border-width:2px}
+  .morph .blk.sfx{border-color:var(--c-particle)}
+  .morph .arrow{color:var(--khafeef);font-size:.85rem}
+  .simple{font-family:"Amiri",serif;font-size:1.25rem;line-height:2.1;padding:.9rem;text-align:center}
+  .simple small{display:block;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:.7rem;color:var(--khafeef);margin-top:.5rem;line-height:1.7}
+  .relLine{font-size:.92rem;line-height:2;padding:.4rem 0}
+  .relLine b{color:var(--zunjufr);font-weight:600}
+  .dictcard{border-top:1px solid var(--waraq3);padding:.8rem 0}
+  .dictcard:first-child{border-top:none;padding-top:0}
+  .dictcard .h{display:flex;align-items:baseline;gap:.5rem;font-size:.82rem}
+  .dictcard .h b{font-size:.88rem}
+  .dictcard .h i{font-style:normal;font-size:.7rem;color:var(--khafeef)}
+  .dictcard p{font-family:"Amiri",serif;font-size:1.08rem;line-height:1.95;margin:.35rem 0 0}
+  .none{font-size:.82rem;color:var(--khafeef);line-height:1.8;padding:.4rem 0}
+  .save{margin-top:.8rem}
+
+  /* ——— الشجرة ——— */
+  .treewrap{margin-top:.7rem}
+  .tree{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;
+        padding:.6rem;margin-top:.6rem;overflow-x:auto}
+  .tree svg{display:block;min-width:100%}
+  .tnode{cursor:pointer}
+  .tw{font-family:"Amiri",serif;font-size:19px;fill:var(--midad)}
+  .tw.imp{fill:var(--zumurrud)}
+  .tw.cur{fill:var(--zunjufr);font-weight:700}
+  .tl{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:10.5px;fill:var(--zunjufr)}
+  .tp{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:9px;fill:var(--khafeef)}
+  .arc{fill:none;stroke:var(--dhahab);stroke-width:1.1}
+  .arc.imp{stroke-dasharray:3 3;stroke:var(--zumurrud)}
+  .arc.cur{stroke:var(--zunjufr);stroke-width:1.8}
+  .lin{border-inline-start:2px solid var(--waraq3);padding-inline-start:.8rem;margin-bottom:.55rem;cursor:pointer}
+  .lin.cur{border-inline-start-color:var(--zunjufr)}
+  .lin b{font-family:"Amiri",serif;font-size:1.2rem;font-weight:400}
+  .lin .r{font-size:.8rem;color:var(--zunjufr)}
+  .lin .d{font-size:.76rem;color:var(--khafeef);line-height:1.8}
+
   .taqdir{background:#F1EADA;border:1px dashed var(--dhahab);border-radius:3px;padding:.8rem;margin-top:.6rem;
     font-family:"Amiri",serif;font-size:1.3rem;line-height:2.3;text-align:center}
   .taqdir .add{color:var(--zumurrud)}
@@ -76,26 +158,31 @@
   .hit p{font-family:"Amiri",serif;font-size:1.2rem;line-height:2.05;margin:.2rem 0 0}
   .hit .hl{color:var(--zunjufr);font-weight:700}
   .hint{font-size:.75rem;color:var(--khafeef);line-height:1.75;margin:.5rem 0 0}
-  .tree{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;
-        padding:.6rem;margin-top:.6rem;overflow-x:auto}
-  .tree svg{display:block;min-width:100%}
-  .tw{font-family:"Amiri",serif;font-size:19px;fill:var(--midad)}
-  .tw.imp{fill:var(--zumurrud)}
-  .tl{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:10.5px;fill:var(--zunjufr)}
-  .tp{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:9px;fill:var(--khafeef)}
-  .arc{fill:none;stroke:var(--dhahab);stroke-width:1.1}
-  .arc.imp{stroke-dasharray:3 3;stroke:var(--zumurrud)}
-  .lin{border-inline-start:2px solid var(--waraq3);padding-inline-start:.8rem;margin-bottom:.55rem}
-  .lin b{font-family:"Amiri",serif;font-size:1.2rem;font-weight:400}
-  .lin .r{font-size:.8rem;color:var(--zunjufr)}
-  .lin .d{font-size:.76rem;color:var(--khafeef);line-height:1.8}
   .note{margin-top:1.5rem;padding:.7rem .85rem;border:1px dashed var(--waraq3);border-radius:3px;
         font-size:.75rem;line-height:1.85;color:var(--khafeef)}
   .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem}
   .fld{display:grid;gap:.25rem}
   .fld label{font-size:.72rem;color:var(--khafeef)}
+  .smartbar{display:flex;gap:.5rem;margin-top:.9rem}
+  .smartbar input{flex:1;font-family:"Amiri",serif;font-size:1.1rem}
+  .parsed{font-size:.76rem;color:var(--khafeef);margin-top:.4rem;line-height:1.8}
+  .parsed b{color:var(--zumurrud)}
+
+  /* ——— مكتبتي ——— */
+  .libitem{background:var(--waraq2);border:1px solid var(--waraq3);border-radius:3px;
+    padding:.7rem .85rem;margin-bottom:.5rem}
+  .libitem .h{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:baseline}
+  .libitem .ref{font-size:.78rem;color:var(--zunjufr)}
+  .libitem .t{font-family:"Amiri",serif;font-size:1.1rem;margin:.25rem 0 0}
+  .libitem .n{font-size:.78rem;color:var(--khafeef);margin-top:.3rem;line-height:1.8}
+  .libitem .acts{display:flex;gap:.4rem;margin-top:.5rem}
+
   @media (max-width:560px){ .three{grid-template-columns:1fr 1fr} .seg{grid-template-columns:4.5rem 1fr}
-    header .sub{display:none} header a{margin-inline-start:.7rem} }
+    header .sub{display:none} header a{margin-inline-start:.7rem} .roleMode{margin-inline-start:0} }
+  @media print{
+    header,.tabs,.stageMode,.quickstrip,.wtabs,.save,.note,.copyright,#paneSearch,#paneLib{display:none !important}
+    .panelCol{position:static} body{padding-bottom:0}
+  }
 
   /* ——— زخرفة الخلفية ——— */
   body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -108,7 +195,7 @@
   .tagline{font-size:.72rem;color:var(--khafeef);line-height:1.7;
     flex-basis:100%;margin-top:.15rem}
   .tagline b{color:var(--zunjufr);font-weight:500}
-  .copyright{position:relative;z-index:1;max-width:900px;margin:2.6rem auto 0;
+  .copyright{position:relative;z-index:1;max-width:1180px;margin:2.6rem auto 0;
     padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom));
     border-top:1px solid var(--dhahab);text-align:center;
     font-size:.74rem;color:var(--khafeef);line-height:2}
@@ -122,18 +209,19 @@
   <span class="sub">المختبر اللغويّ للقرآن</span>
   <span style="flex:1"></span>
   <a href="./">جَذْر</a>
-  <a href="./bunyan.html">محرِّر التقدير</a>
+  <a href="./bunyan.html">المحرِّر</a>
   <span class="tagline">هذا التطبيق الفريد من عمل <b>د. محمد دركوشي</b> — خدمةً للقرآن العظيم واللغة العربية</span>
 </header>
 
 <main>
   <div class="row tabs">
-    <button class="tab" id="tabAyah" aria-selected="true">الإعراب التفاعليّ</button>
-    <button class="tab" id="tabSearch" aria-selected="false">البحث النحويّ العكسيّ</button>
+    <button class="tab" id="tabAyah" aria-selected="true">الآية والإعراب</button>
+    <button class="tab" id="tabSearch" aria-selected="false">البحث النحويّ العميق</button>
+    <button class="tab" id="tabLib" aria-selected="false">مكتبتي</button>
   </div>
   <div class="status" id="status">…</div>
 
-  <!-- ١ — الإعراب التفاعلي -->
+  <!-- ١ — الآية والإعراب -->
   <section id="paneAyah">
     <div class="row" style="margin-top:.9rem">
       <input class="ref" id="ref" value="2:255" aria-label="السورة:الآية" />
@@ -141,28 +229,66 @@
       <button id="prev">◀</button>
       <button id="next">▶</button>
       <span class="sub" id="ayahMeta"></span>
+      <span class="row roleMode" role="group" aria-label="مستوى العرض">
+        <span class="segbtns">
+          <button id="roleStudent" aria-pressed="true">طالب</button>
+          <button id="roleResearcher" aria-pressed="false">باحث</button>
+        </span>
+      </span>
     </div>
 
-    <div class="ayah" id="ayah"></div>
-    <p class="hint">اضغط أيّ كلمة ليظهر تفكيكها الصرفيّ وموقعها. الكلمات ذات الخطّ المنقّط الأحمر
-       عليها موضع مدوَّن في طبقة المحذوف والمقدَّر.</p>
-
-    <div id="panel"></div>
-
-    <div class="row" style="margin-top:1rem">
-      <button id="treeBtn">أظهر شجرة الإعراب</button>
-      <button id="linBtn" hidden>العرض الخطّيّ</button>
-      <button id="svgBtn" hidden>العرض الشجريّ</button>
+    <div class="row stageMode" role="group" aria-label="طريقة العرض">
+      <span class="segbtns">
+        <button id="modeText" aria-pressed="true">الإعراب النصّيّ</button>
+        <button id="modeTree" aria-pressed="false">الشجرة</button>
+        <button id="modeBoth" aria-pressed="false">كلاهما</button>
+      </span>
+      <span class="segbtns" id="treeStyleBtns" hidden>
+        <button id="svgBtn" aria-pressed="true">شجريّ</button>
+        <button id="linBtn" aria-pressed="false">خطّيّ</button>
+      </span>
       <span class="sub" id="treeMeta"></span>
     </div>
-    <div id="treeBox"></div>
 
-    <div id="taqdirBox"></div>
+    <div class="stageWrap">
+      <div class="stageCol">
+        <div class="ayah" id="ayah"></div>
+        <div class="legend">
+          <span class="n">اسم</span><span class="v">فعل</span><span class="p">حرف</span>
+        </div>
+        <p class="hint">اضغط أيّ كلمة لتفتح تحليلها في اللوحة. الخطّ الذهبيّ أسفل الكلمة يعني أن لها
+          موضعًا مدوَّنًا في محرِّرك.</p>
+
+        <div class="treewrap" id="treeBox"></div>
+
+        <div class="quickstrip">
+          <button class="mini" id="qsTree">🌳 أظهر الشجرة</button>
+          <button class="mini" id="qsSources">📚 المصادر</button>
+          <button class="mini" id="qsSimilar">🔗 آيات مشابهة بجذر الكلمة المختارة</button>
+          <button class="mini" id="qsSaveAyah">🔖 احفظ الآية في مكتبتي</button>
+        </div>
+
+        <div id="taqdirBox"></div>
+      </div>
+
+      <div class="panelCol">
+        <div class="panel" id="panel"></div>
+      </div>
+    </div>
   </section>
 
-  <!-- ٢ — البحث النحوي العكسي -->
+  <!-- ٢ — البحث النحوي العميق -->
   <section id="paneSearch" hidden>
-    <div class="three" style="margin-top:.9rem">
+    <p class="hint" style="margin-top:.9rem">اكتب طلبك بعبارة عربيّة عاديّة، مثل «كل الأفعال المبنية للمجهول
+      في سورة يوسف» أو «كل الأسماء المنصوبة من جذر غفر»، واضغط «فسّرها». الفهم هنا مبنيّ على كلمات مفتاحيّة
+      بسيطة أُقارن بها عبارتك، وليس فهمًا لغويًّا كاملًا — راجع الحقول أدناه بعد الضغط وعدّلها إن أخطأتُ.</p>
+    <div class="smartbar">
+      <input id="smartQ" placeholder="مثال: كل الأسماء المنصوبة من جذر غفر في سورة البقرة" />
+      <button class="main" id="smartGo">فسّرها وابحث</button>
+    </div>
+    <div class="parsed" id="parsed"></div>
+
+    <div class="three" style="margin-top:1.1rem">
       <div class="fld"><label>نوع الكلمة</label>
         <select id="qPos"><option value="">أيّ نوع</option></select></div>
       <div class="fld"><label>الحالة الإعرابيّة</label>
@@ -197,10 +323,28 @@
     <div id="results" style="margin-top:1rem"></div>
   </section>
 
+  <!-- ٣ — مكتبتي -->
+  <section id="paneLib" hidden>
+    <p class="hint" style="margin-top:.9rem">ما تحفظه هنا — كلمة أو آية مع ملاحظتك — يبقى في ذاكرة هذا
+      المتصفّح وحده على هذا الجهاز، ولا يُرفع إلى أيّ خادم. صدِّر نسخة بين حين وآخر واحتفظ بها.</p>
+    <div class="row">
+      <button id="libExpJson">تصدير JSON</button>
+      <button id="libExpCsv">تصدير CSV</button>
+      <button id="libCite">نسخ توثيق أكاديميّ لكل محفوظاتي</button>
+      <button id="libPrint">طباعة / PDF</button>
+      <span class="sub" id="libCount"></span>
+    </div>
+    <div id="libList" style="margin-top:1rem"></div>
+  </section>
+
   <div class="note">
     التحليل الصرفيّ من <a class="link" href="http://corpus.quran.com" target="_blank" rel="noreferrer">Quranic Arabic Corpus</a>
-    (رخصة GPL) بترجمة عربيّة للمصطلحات. طبقة المحذوف والمقدَّر مقروءة من محرِّرك على هذا الجهاز نفسه،
-    وتظهر هنا حال حفظها هناك. والشجرة النحويّة من <a class="link" href="https://github.com/NoorBayan/Quranic" target="_blank" rel="noreferrer">NoorBayan/Quranic</a> برخصة MIT.
+    (رخصة GPL). الشجرة النحويّة من <a class="link" href="https://github.com/NoorBayan/Quranic" target="_blank" rel="noreferrer">NoorBayan/Quranic</a>
+    (رخصة MIT). المعاجم المقارنة نصوصها في الملك العام، منقولة رقميًّا عبر
+    <a class="link" href="https://github.com/abuyahyo/mojam" target="_blank" rel="noreferrer">mojam</a>.
+    طبقتا المحذوف والمقدَّر واللمسات البلاغية مقروءتان من محرِّرك على هذا الجهاز نفسه — وحدك مصدرهما،
+    فلا يوجد فيهما سطر واحد مولَّد آليًّا أو منسوب إلى عالم لم تُدخله أنت. تبويب «الخلاف» يعرض ما دوّنتَه
+    من أقوال متعدّدة لموضع واحد؛ إن لم تُدوِّن شيئًا بعد فسيبقى فارغًا بدل أن يخترع لك قولًا.
   </div>
 </main>
 
@@ -225,10 +369,13 @@ const POS = {N:"اسم",PN:"اسم علم",ADJ:"صفة",V:"فعل",PRON:"ضمي�
   PREV:"حرف كفّ",PRO:"حرف نهي",REM:"حرف استئناف",RET:"حرف استدراك",RSLT:"حرف جواب",SUP:"حرف زائد",
   SUR:"حرف فجاءة",IMPN:"اسم فعل أمر"};
 const CASEA={NOM:"مرفوع",ACC:"منصوب",GEN:"مجرور"}, MOODA={IND:"مرفوع",SUBJ:"منصوب",JUS:"مجزوم"};
+const CASE_MARK={NOM:"الضمّة",ACC:"الفتحة",GEN:"الكسرة"};
 const NUMA={MS:"مفرد مذكّر",FS:"مفرد مؤنّث",MD:"مثنّى مذكّر",FD:"مثنّى مؤنّث",MP:"جمع مذكّر",
   FP:"جمع مؤنّث",M:"مذكّر",F:"مؤنّث",P:"جمع",D:"مثنّى",S:"مفرد"};
 const FORMA={"(I)":"الأوّل","(II)":"الثاني","(III)":"الثالث","(IV)":"الرابع","(V)":"الخامس","(VI)":"السادس",
   "(VII)":"السابع","(VIII)":"الثامن","(IX)":"التاسع","(X)":"العاشر","(XI)":"الحادي عشر","(XII)":"الثاني عشر"};
+const FORM_WORDS={"الأول":"I","الأوّل":"I","الثاني":"II","الثالث":"III","الرابع":"IV","الخامس":"V",
+  "السادس":"VI","السابع":"VII","الثامن":"VIII","التاسع":"IX","العاشر":"X"};
 const DAMIR={"1S":"أنا","1P":"نحن","2MS":"أنت","2FS":"أنتِ","2MD":"أنتما","2MP":"أنتم","2FP":"أنتنّ",
   "3MS":"هو","3FS":"هي","3MD":"هما","3FD":"هما","3MP":"هم","3FP":"هنّ"};
 const PREFA={"Al+":"«ال» التعريف","w:CONJ+":"واو العطف","f:CONJ+":"فاء العطف","l:P+":"لام الجرّ",
@@ -239,10 +386,16 @@ const PREFA={"Al+":"«ال» التعريف","w:CONJ+":"واو العطف","f:CO
 
 const F = id => document.getElementById(id);
 const say = t => F("status").textContent = t || "";
-let DATA = null;                 // {verses, byRoot}
+let DATA = null;
 let cur = { s:2, v:255, w:0 };
+let role = localStorage.getItem("bunyan:role") || "طالب";
+let stageMode = "text";
+let treeMode = "svg";
+let wtab = "e";
+
+/* ——— يقرأ ما دوّنتَه في المحرِّر ——— */
 let TAQ = { entries: [] };
-// يقرأ ما دوّنتَه في المحرِّر، بأيّ من صيغتَي الحفظ
+let RAW = [];
 (function(){
   const out = [];
   try {
@@ -252,27 +405,30 @@ let TAQ = { entries: [] };
   try {
     const b = JSON.parse(localStorage.getItem("bunyan:entries") || "null");
     const arr = Array.isArray(b) ? b : (b && b.entries) || [];
+    RAW = arr;
     const POSA = { before:"قبله", after:"بعده", instead:"في محلّه" };
     arr.forEach(e => out.push({
-      id: e.id, surah: +e.sura, ayah: +e.aya,
+      id: e.id, kind: e.kind || "تقدير", surah: +e.sura, ayah: +e.aya,
       wordFrom: (+e.wordIndex || 0) + 1, wordTo: (+e.wordIndex || 0) + 1,
       anchor: e.word || "", position: POSA[e.place] || e.place || "قبله",
       category: e.type || "", hukm: e.degree || "", taqdir: e.text || "",
       qarina: e.evidence || "", balagha: e.balagha || "",
-      bidoonBayan: e.alt || "", status: e.status || "",
-      wujuh: (e.sayer || e.source) ? [{ taqdir: e.text || "", qail: e.sayer || "",
-        masdar: e.source || "", madrasa: e.school || "", rujhan: e.degree || "" }] : []
+      bidoonBayan: e.alt || "", status: e.status || "", sayer: e.sayer || "",
+      source: e.source || "", school: e.school || ""
     }));
   } catch(e){}
   TAQ = { entries: out };
 })();
+function entriesAt(s, v, w){ return RAW.filter(e => +e.sura === s && +e.aya === v && (+e.wordIndex + 1) === w); }
+function taqdirOf(s, v){ return (TAQ.entries || []).filter(e => e.surah === s && e.ayah === v); }
 
+/* ——— مساعدات الصرف والنحو ——— */
 function segInfo(feats){
   const ps = feats.split("|"), kind = ps[0], d = {};
   if(kind === "PREFIX") return { kind:"سابقة", text: PREFA[ps[1]] || ("زائدة " + (ps[1]||"").replace("+","")), tags:[] };
   for(const f of ps){
     if(f.startsWith("POS:")) d.pos = f.slice(4);
-    else if(CASEA[f]) d.cas = CASEA[f];
+    else if(CASEA[f]) d.cas = CASEA[f], d.casCode = f;
     else if(f.startsWith("MOOD:")) d.mood = MOODA[f.slice(5)];
     else if(f === "PERF") d.tense = "ماضٍ";
     else if(f === "IMPF") d.tense = "مضارع";
@@ -306,8 +462,16 @@ function segInfo(feats){
   if(d.num) tags.push(d.num);
   if(d.person && d.pos === "V") tags.push("لـ" + (DAMIR[d.person] || d.person));
   if(d.pron) tags.push("ضميره " + (DAMIR[d.pron] || d.pron));
-  return { kind:"أصل الكلمة", text: base, tags, root: d.root, lem: d.lem };
+  return { kind:"أصل الكلمة", text: base, tags, root: d.root, lem: d.lem, pos: d.pos,
+           cas: d.cas, casCode: d.casCode, def: d.def, num: d.num, form: d.form };
 }
+function posClassOf(code){
+  if(!code) return "";
+  if(code === "V") return "pos-v";
+  if(["N","PN","ADJ","DEM","REL","PRON","T","LOC","IMPN"].includes(code)) return "pos-n";
+  return "pos-p";
+}
+function stemOf(segs){ return segs.map(x => segInfo(x[3])).find(d => d.kind === "أصل الكلمة"); }
 
 async function load(){
   if(DATA) return DATA;
@@ -339,49 +503,27 @@ async function load(){
   say("");
   return DATA;
 }
-
 const wordsOf = (s, v) => {
   const segs = (DATA.verses.get(s + ":" + v) || []), m = new Map();
   segs.forEach(([w, , form]) => m.set(w, (m.get(w) || "") + form));
   return [...m.entries()].sort((a,b) => a[0]-b[0]);
 };
 
-function taqdirOf(s, v){ return (TAQ.entries || []).filter(e => e.surah === s && e.ayah === v); }
-
+/* ——— رسم الآية ——— */
 function drawAyah(){
   const ws = wordsOf(cur.s, cur.v), marks = taqdirOf(cur.s, cur.v);
   const marked = new Set();
   marks.forEach(e => { for(let i = e.wordFrom; i <= e.wordTo; i++) marked.add(i); });
-  F("ayah").innerHTML = ws.map(([i, t]) =>
-    '<button class="w' + (i === cur.w ? " sel" : "") + (marked.has(i) ? " has" : "") + '" data-w="' + i + '">'
-    + esc(t) + '</button>').join(" ");
-  F("ayah").querySelectorAll(".w").forEach(b => b.onclick = () => { cur.w = +b.dataset.w; drawAyah(); drawPanel(); });
-  F("ayahMeta").textContent = ws.length + " كلمة" + (marks.length ? " · " + marks.length + " موضع تقدير" : "");
+  F("ayah").innerHTML = ws.map(([i, t]) => {
+    const segs = (DATA.verses.get(cur.s + ":" + cur.v) || []).filter(x => x[0] === i);
+    const st = stemOf(segs);
+    return '<button class="w ' + posClassOf(st && st.pos) + (i === cur.w ? " sel" : "")
+      + (marked.has(i) ? " has" : "") + '" data-w="' + i + '">' + esc(t) + '</button>';
+  }).join(" ");
+  F("ayah").querySelectorAll(".w").forEach(b => b.onclick = () => selectWord(+b.dataset.w));
+  F("ayahMeta").textContent = ws.length + " كلمة" + (marks.length ? " · " + marks.length + " مدخلًا مدوَّنًا" : "");
   drawTaqdir(marks, ws);
 }
-
-function drawPanel(){
-  const segs = (DATA.verses.get(cur.s + ":" + cur.v) || []).filter(x => x[0] === cur.w);
-  if(!segs.length){ F("panel").innerHTML = ""; return; }
-  const kalima = segs.map(x => x[2]).join("");
-  let root = null;
-  const rows = segs.map(([ , , form, feats]) => {
-    const d = segInfo(feats);
-    if(d.root) root = d.root;
-    return '<div class="seg"><div class="part">' + esc(form)
-      + '<span class="kind">' + d.kind + '</span></div>'
-      + '<div class="val">' + esc(d.text)
-      + (d.lem ? ' <span class="chip">مدخله ' + esc(d.lem) + '</span>' : "")
-      + (d.tags.length ? '<div class="chips">' + d.tags.map(t => '<span class="chip">' + esc(t) + '</span>').join("") + '</div>' : "")
-      + '</div></div>';
-  }).join("");
-  const n = root ? (DATA.byRoot.get(norm(root)) || []).length : 0;
-  F("panel").innerHTML = '<div class="panel"><p class="kalima">' + esc(kalima) + '</p>' + rows
-    + (root ? '<p class="hint">الجذر <b>' + esc(root) + '</b> — وقع في ' + n + ' موضعًا في القرآن. '
-        + '<a class="link" href="./?q=' + encodeURIComponent(root) + '">افتحه في معاجم جَذْر ↗</a></p>' : "")
-    + '</div>';
-}
-
 function drawTaqdir(marks, ws){
   if(!marks.length){ F("taqdirBox").innerHTML = ""; return; }
   const cards = marks.map(e => {
@@ -392,52 +534,237 @@ function drawTaqdir(marks, ws){
       else if(i === e.wordFrom) out.push('<span class="add">' + esc(e.taqdir) + '</span>');
       if(e.position === "بعده" && i === e.wordTo) out.push('<span class="add">' + esc(e.taqdir) + '</span>');
     });
-    return '<div class="card"><div class="h">' + esc(e.category) + " " + esc(e.position)
+    return '<div class="card"><div class="h">' + (e.kind === "بلاغة" ? "لمسة بلاغيّة — " : "")
+      + esc(e.category) + " " + esc(e.position)
       + " — الكلمة " + e.wordFrom + (e.wordTo !== e.wordFrom ? "–" + e.wordTo : "")
       + ' <span class="chip k">' + esc(e.hukm) + '</span></div>'
       + '<div class="taqdir" style="margin-top:.5rem">' + out.join(" ") + '</div>'
       + (e.qarina ? '<div class="m"><b>القرينة:</b> ' + esc(e.qarina) + '</div>' : "")
-      + (e.balagha ? '<div class="m"><b>أثره البلاغيّ:</b> ' + esc(e.balagha) + '</div>' : "")
-      + ((e.wujuh || []).length ? '<div class="m"><b>الأوجه:</b> ' + e.wujuh.map(w =>
-          esc(w.taqdir) + " (" + esc(w.qail || "—") + "، " + esc(w.rujhan || "") + ")").join(" · ") + '</div>' : "")
+      + (e.sayer ? '<div class="m"><b>القائل:</b> ' + esc(e.sayer)
+          + (e.source ? " — " + esc(e.source) : "") + '</div>' : "")
       + '</div>';
   }).join("");
-  F("taqdirBox").innerHTML = '<h2 class="sect">طبقة المحذوف والمقدَّر — من تدوينك</h2>' + cards;
+  F("taqdirBox").innerHTML = '<h2 class="sect">ما دوّنتَه في هذه الآية</h2>' + cards;
+}
+function selectWord(w){
+  cur.w = w; drawAyah();
+  wtab = "e"; drawPanel();
+  if(TREE[cur.s]) highlightTree();
 }
 
-async function goto(s, v){
-  await load();
-  if(!DATA.verses.has(s + ":" + v)){ say("لا توجد آية " + s + ":" + v); return; }
-  cur = { s, v, w:1 }; F("ref").value = s + ":" + v;
-  say(""); drawAyah(); drawPanel();
-  F("treeBox").innerHTML = ""; F("treeMeta").textContent = "";
+/* ——— لوحة الكلمة: تبويبات ——— */
+const WTABS = [["e","الإعراب"],["s","الصرف"],["r","العلاقات"],["d","المعاجم"],["k","الخلاف"],["b","البلاغة"]];
+function panelShell(bodyHtml, kalima, posCls){
+  return '<p class="kalima ' + (posCls||"") + '">' + esc(kalima || "—") + '</p>'
+    + '<div class="wtabs">' + WTABS.map(([id,label]) =>
+        '<button data-wt="' + id + '" aria-pressed="' + (wtab===id) + '">' + label + '</button>').join("") + '</div>'
+    + '<div class="panelBody" id="panelBody">' + bodyHtml + '</div>'
+    + '<div class="save"><button class="mini" id="saveWordBtn">🔖 احفظ هذه الكلمة في مكتبتي</button></div>';
+}
+function wireWTabs(){
+  F("panel").querySelectorAll("[data-wt]").forEach(b => b.onclick = () => { wtab = b.dataset.wt; drawPanel(); });
+  const sb = document.getElementById("saveWordBtn");
+  if(sb) sb.onclick = () => {
+    const kalima = F("panel").querySelector(".kalima").textContent;
+    const note = window.prompt("ملاحظتك على هذه الكلمة (اختياريّ):", "") || "";
+    libSave({ kind:"word", surah: cur.s, ayah: cur.v, word: kalima,
+      ref: cur.s + ":" + cur.v + " — " + kalima, text: kalima, note });
+    say("حُفظت الكلمة في مكتبتي");
+  };
+}
+function drawPanel(){
+  if(!cur.w){ F("panel").innerHTML = '<div class="panelBody"><p class="none">اضغط أيّ كلمة من الآية لتبدأ.</p></div>'; return; }
+  const segs = (DATA.verses.get(cur.s + ":" + cur.v) || []).filter(x => x[0] === cur.w);
+  if(!segs.length){ F("panel").innerHTML = ""; return; }
+  const kalima = segs.map(x => x[2]).join("");
+  const st = stemOf(segs) || {};
+  const posCls = posClassOf(st.pos);
+  let body = "";
+  if(wtab === "e") body = paneErab(segs, st);
+  else if(wtab === "s") body = paneSarf(segs, st);
+  else if(wtab === "r") body = paneRel();
+  else if(wtab === "d") body = paneDicts(st);
+  else if(wtab === "k") body = paneKhilaf();
+  else if(wtab === "b") body = paneBalagha();
+  F("panel").innerHTML = panelShell(body, kalima, posCls);
+  wireWTabs();
+  if(wtab === "d") loadDictsFor(st.root);
+  if(wtab === "r") ensureTreeThen(paneRel, "r");
+}
+function paneErab(segs, st){
+  if(role === "طالب"){
+    const parts = [];
+    if(st.pos) parts.push(POS[st.pos] || st.pos);
+    if(st.cas) parts.push(st.cas);
+    let sent = parts.length ? parts.join("، ") : "أداة أو حرف لا محلّ له من الإعراب مستقلًّا";
+    let mark = "";
+    if(st.casCode && CASE_MARK[st.casCode])
+      mark = "، وعلامة " + (st.casCode === "NOM" ? "رفعه" : st.casCode === "ACC" ? "نصبه" : "جرّه")
+           + " " + CASE_MARK[st.casCode];
+    return '<div class="simple">' + esc(sent + mark)
+      + '<small>هذا وصفٌ مبسَّط لطالب يتعلّم؛ العلامة المذكورة هي الأصل الغالب،'
+      + ' وقد تختلف الصورة الظاهرة بحسب آخر الكلمة (معتلّ، ممنوع من الصرف، مثنّى أو جمع…).'
+      + ' بدِّل إلى وضع «باحث» للتفصيل الكامل.</small></div>';
+  }
+  return segs.map(([ , , form, feats]) => {
+    const d = segInfo(feats);
+    return '<div class="seg"><div class="part">' + esc(form) + '<span class="kind">' + d.kind + '</span></div>'
+      + '<div class="val">' + esc(d.text)
+      + (d.lem ? ' <span class="chip">مدخله ' + esc(d.lem) + '</span>' : "")
+      + (d.tags.length ? '<div class="chips">' + d.tags.map(t => {
+          const cc = t === d.cas && d.casCode ? " case-" + d.casCode : "";
+          return '<span class="chip' + cc + '">' + esc(t) + '</span>';
+        }).join("") + '</div>' : "") + '</div></div>';
+  }).join("");
+}
+function paneSarf(segs, st){
+  const blocks = segs.map(([ , , form, feats]) => {
+    const d = segInfo(feats);
+    const cls = d.kind === "سابقة" ? "pfx" : d.kind === "لاحقة" ? "sfx" : "stm";
+    return '<div class="blk ' + cls + '">' + esc(form) + '<small>' + d.kind + '</small></div>';
+  });
+  const morph = '<div class="morph">' + blocks.join('<span class="arrow">‹</span>') + '</div>';
+  const n = st.root ? (DATA.byRoot.get(norm(st.root)) || []).length : 0;
+  const facts = [];
+  if(st.root) facts.push(["الجذر", st.root]);
+  if(st.lem) facts.push(["الأصل المعجميّ (Lemma)", st.lem]);
+  if(st.form) facts.push(["الوزن الصرفيّ", "على وزن " + st.form]);
+  if(st.num) facts.push(["العدد", st.num]);
+  if(st.def) facts.push(["التعريف والتنكير", st.def]);
+  const rows = facts.map(([k,v]) => '<div class="seg"><div class="part">' + esc(k) + '</div><div class="val">' + esc(v) + '</div></div>').join("");
+  return morph + rows + (st.root ? '<p class="hint" style="padding:0 .9rem .9rem">الجذر <b>' + esc(st.root)
+    + '</b> وقع ' + n + ' مرّة في القرآن. <a class="link" href="./?q=' + encodeURIComponent(st.root)
+    + '">افتحه في معاجم جَذْر ↗</a></p>' : "");
+}
+function paneRel(){
+  const data = TREE[cur.s];
+  if(!data) return '<p class="none">العلاقات تُقرأ من شجرة الإعراب. اضغط «حمّل شجرة السورة».</p>'
+    + '<button id="relLoad" class="mini">حمّل شجرة السورة</button>';
+  const sents = sentencesOf(data, cur.v);
+  let toks = null, self = null;
+  for(const st of sents){ const f = st.toks.find(t => t.w === cur.w); if(f){ toks = st.toks; self = f; break; } }
+  if(!self) return '<p class="none">لا بيانات علاقة لهذه الكلمة في الشجرة.</p>';
+  const by = {}; toks.forEach(t => by[t.t] = t);
+  const head = by[self.h];
+  const deps = toks.filter(t => t.h === self.t && t.t !== self.t);
+  let out = "";
+  if(self.r === "root") out += '<p class="relLine">هذه الكلمة <b>عمدة الجملة</b> — لا تتعلّق بغيرها.</p>';
+  else if(head) out += '<p class="relLine">علاقتها: <b>' + esc(self.r) + '</b> — تتعلّق بـ «'
+    + esc(head.x ? "عنصر مقدَّر" : head.u) + '»</p>';
+  if(deps.length) out += '<p class="relLine">يتعلّق بها: ' + deps.map(d =>
+    '«' + esc(d.x ? "مقدَّر" : d.u) + '» (' + esc(d.r) + ')').join('، ') + '</p>';
+  if(self.g) out += '<p class="relLine">تقع داخل مركّب: <b>' + esc(self.gt || self.g) + '</b></p>';
+  out += '<button id="relTree" class="mini" style="margin-top:.5rem">أضئها في الشجرة</button>';
+  return out;
+}
+function ensureTreeThen(renderFn, wt){
+  const relLoad = document.getElementById("relLoad");
+  if(relLoad) relLoad.onclick = async () => {
+    relLoad.textContent = "يُحمَّل…"; relLoad.disabled = true;
+    try { await loadTree(cur.s); if(wtab === wt) drawPanel(); } catch(e){}
+  };
+  const relTree = document.getElementById("relTree");
+  if(relTree) relTree.onclick = () => { setStageMode(stageMode === "text" ? "both" : stageMode); highlightTree(true); };
+}
+function paneKhilaf(){
+  const list = entriesAt(cur.s, cur.v, cur.w).filter(e => (e.kind || "تقدير") !== "بلاغة");
+  if(!list.length) return '<p class="none">لا خلاف مدوَّن لهذه الكلمة بعد. الخلاف يظهر هنا حين تدوّن'
+    + ' في المحرِّر أكثر من قول لموضع واحد، بأصحابها ومصادرها — لا شيء يُختلَق هنا.</p>'
+    + '<a class="link" href="./bunyan.html">دوِّن قولًا في المحرِّر ↗</a>';
+  const single = list.length === 1;
+  return (single ? '<p class="hint">قول واحد مسجَّل، لم يُقيَّد بخلاف بعد.</p>' : '<p class="hint">' + list.length + ' أقوال مدوَّنة لهذا الموضع:</p>')
+    + list.map((e,i) => '<div class="card"><div class="h">الوجه ' + (i+1) + ' — ' + esc(e.degree) + '</div>'
+      + '<p class="b">[' + esc(e.text) + '] ' + (e.place==="before"?"قبل":e.place==="after"?"بعد":"محلّ") + ' «' + esc(e.word) + '»</p>'
+      + '<div class="m">' + (e.sayer ? "القائل: " + esc(e.sayer) + (e.school?" ("+esc(e.school)+")":"") + "<br>" : "")
+      + (e.source ? "المصدر: " + esc(e.source) + "<br>" : "")
+      + (e.evidence ? "الدليل: " + esc(e.evidence) : "") + '</div></div>').join("");
+}
+function paneBalagha(){
+  const list = entriesAt(cur.s, cur.v, cur.w).filter(e => (e.kind || "تقدير") === "بلاغة");
+  if(!list.length) return '<p class="none">لا لمسة بلاغيّة مدوَّنة لهذه الكلمة بعد.</p>'
+    + '<a class="link" href="./bunyan.html">دوِّن لمسة في المحرِّر ↗</a>';
+  return list.map(e => '<div class="card"><div class="h">' + esc(e.type) + '</div>'
+    + '<p class="b">' + esc(e.text) + '</p>'
+    + '<div class="m">' + (e.sayer ? "القائل: " + esc(e.sayer) + "<br>" : "")
+    + (e.source ? "المصدر: " + esc(e.source) : "") + '</div></div>').join("");
 }
 
-/* ——— شجرة الإعراب: بيانات NoorBayan/Quranic برخصة MIT ——— */
-const TREE = {};                 // رقم السورة → بيانات
-let treeMode = "svg";
+/* ——— المعاجم المقارنة ——— */
+function paneDicts(st){
+  if(!st.root) return '<p class="none">هذه الكلمة أداة أو حرف، ولا جذر معجميًّا يُقارَن.</p>';
+  return '<p class="none">تُنزَّل المعاجم…</p>';
+}
+const DICT_CDN = "https://cdn.jsdelivr.net/gh/abuyahyo/mojam@main/data/";
+const DICT_RAW = "https://raw.githubusercontent.com/abuyahyo/mojam/main/data/";
+let DICTS = null, dictsLoading = null;
+async function getJSON(path){
+  try{ const r = await fetch(DICT_CDN + path); if(r.ok) return await r.json(); }catch(e){}
+  const r2 = await fetch(DICT_RAW + path);
+  if(!r2.ok) throw new Error("تعذّر تنزيل " + path);
+  return await r2.json();
+}
+function idx(arr){ const m = new Map(); arr.forEach(e => { const k = norm(e.root||""); if(!k) return;
+  if(!m.has(k)) m.set(k, []); m.get(k).push(e); }); return m; }
+async function loadDicts(){
+  if(DICTS) return DICTS;
+  if(dictsLoading) return dictsLoading;
+  dictsLoading = (async () => {
+    const [mq, mf, lr] = await Promise.all([getJSON("maqayis.json"), getJSON("mufradat.json"), getJSON("lisan/roots.json")]);
+    DICTS = { maqayis: idx(mq), mufradat: idx(mf), lisanRoots: new Map(), lisanChunks: {} };
+    lr.forEach(([root, chunk, i]) => { const k = norm(root);
+      if(!DICTS.lisanRoots.has(k)) DICTS.lisanRoots.set(k, []); DICTS.lisanRoots.get(k).push([chunk, i]); });
+    return DICTS;
+  })();
+  return dictsLoading;
+}
+async function loadDictsFor(root){
+  const box = F("panelBody");
+  if(!root){ return; }
+  const marker = box.dataset.dictRoot;
+  if(marker === root) return;
+  box.dataset.dictRoot = root;
+  box.innerHTML = '<p class="none">تُنزَّل المعاجم…</p>';
+  let d; try { d = await loadDicts(); } catch(e){ box.innerHTML = '<p class="none">تعذّر تنزيل المعاجم.</p>'; return; }
+  const k = norm(root);
+  const parts = [];
+  const mq = (d.maqayis.get(k)||[])[0], mf = (d.mufradat.get(k)||[])[0];
+  if(mq) parts.push(['مقاييس اللغة','ابن فارس', mq.text]);
+  if(mf) parts.push(['المفردات','الراغب الأصفهاني', mf.text]);
+  const hit = (d.lisanRoots.get(k)||[])[0];
+  if(hit){
+    const [chunk, i] = hit;
+    if(!d.lisanChunks[chunk]) d.lisanChunks[chunk] = await getJSON("lisan/chunks/chunk_" + String(chunk).padStart(3,"0") + ".json");
+    const e = d.lisanChunks[chunk][i];
+    if(e) parts.push(['لسان العرب','ابن منظور', e.text]);
+  }
+  if(!parts.length){ box.innerHTML = '<p class="none">لا مادّة لهذا الجذر في المعاجم المتاحة.'
+    + ' <a class="link" href="./?q=' + encodeURIComponent(root) + '">جرّب معاجم جَذْر ↗</a></p>'; return; }
+  box.innerHTML = parts.map(([name, author, text]) =>
+    '<div class="dictcard"><div class="h"><b>' + name + '</b><i>' + author + '</i></div>'
+    + '<p>' + esc(text.length > 900 ? text.slice(0,900) + " …" : text) + '</p></div>').join("")
+    + '<p class="hint"><a class="link" href="./?q=' + encodeURIComponent(root) + '">افتح النصّ كاملًا وباقي المعاجم في جَذْر ↗</a></p>';
+}
 
+/* ——— الشجرة ——— */
+const TREE = {};
 async function loadTree(s){
   if(TREE[s]) return TREE[s];
   say("تُجلب شجرة السورة…");
   const name = String(s).padStart(3,"0") + ".json";
   let data = null;
-  for(const path of ["./tree/" + name, "./" + name]){        // داخل المجلّد أو في الجذر
+  for(const path of ["./tree/" + name, "./" + name]){
     try { const r = await fetch(path); if(r.ok){ data = await r.json(); break; } } catch(e){}
   }
   if(!data){ say("لم أجد ملفّ شجرة هذه السورة."); throw new Error("tree"); }
   TREE[s] = data; say("");
   return TREE[s];
 }
-function sentencesOf(data, v){
-  return data.sents.filter(st => st.toks.some(t => t.v === v));
-}
+function sentencesOf(data, v){ return data.sents.filter(st => st.toks.some(t => t.v === v)); }
 function svgTree(toks){
-  const PAD = 26, GAP = 16, BASE_H = 26;
+  const PAD = 26, GAP = 16;
   const wid = t => Math.max(46, (t.u || "").length * 11 + 16);
   let total = PAD * 2; toks.forEach(t => total += wid(t) + GAP);
   const W = Math.max(total, 320);
-  // من اليمين إلى اليسار
   let x = W - PAD, pos = {};
   toks.forEach(t => { const w = wid(t); pos[t.t] = x - w / 2; x -= w + GAP; });
   let maxLvl = 1;
@@ -446,18 +773,23 @@ function svgTree(toks){
     const x1 = pos[t.t], x2 = pos[t.h], d = Math.abs(toks.findIndex(k => k.t === t.t) - toks.findIndex(k => k.t === t.h));
     const lvl = Math.min(4, d); maxLvl = Math.max(maxLvl, lvl);
     const h = 22 + lvl * 20, mx = (x1 + x2) / 2;
-    return '<path class="arc' + (t.x ? " imp" : "") + '" d="M ' + x1 + ' 0 C ' + x1 + ' ' + (-h)
+    const curCls = (t.w === cur.w) ? " cur" : "";
+    return '<path class="arc' + (t.x ? " imp" : "") + curCls + '" d="M ' + x1 + ' 0 C ' + x1 + ' ' + (-h)
       + ', ' + x2 + ' ' + (-h) + ', ' + x2 + ' 0" transform="translate(0,' + (28 + maxLvl * 20) + ')" />'
       + '<text class="tl" x="' + mx + '" y="' + (28 + maxLvl * 20 - h * 0.72) + '" text-anchor="middle">'
       + esc(t.r) + '</text>';
   }).join("");
   const top = 28 + maxLvl * 20;
-  const words = toks.map(t =>
-    '<text class="tw' + (t.x ? " imp" : "") + '" x="' + pos[t.t] + '" y="' + (top + 24)
-    + '" text-anchor="middle">' + esc(t.x ? "⟨مقدَّر⟩" : t.u) + '</text>'
-    + '<text class="tp" x="' + pos[t.t] + '" y="' + (top + 40) + '" text-anchor="middle">'
-    + esc([t.p, t.c === "NOM" ? "مرفوع" : t.c === "ACC" ? "منصوب" : t.c === "GEN" ? "مجرور" : ""]
-        .filter(Boolean).join(" · ")) + '</text>').join("");
+  const words = toks.map(t => {
+    const curCls = t.w === cur.w ? " cur" : "";
+    return '<g class="tnode" data-w="' + t.w + '">'
+      + '<rect x="' + (pos[t.t]-30) + '" y="' + (top-2) + '" width="60" height="34" fill="transparent"/>'
+      + '<text class="tw' + (t.x ? " imp" : "") + curCls + '" x="' + pos[t.t] + '" y="' + (top + 24)
+      + '" text-anchor="middle">' + esc(t.x ? "⟨مقدَّر⟩" : t.u) + '</text>'
+      + '<text class="tp" x="' + pos[t.t] + '" y="' + (top + 40) + '" text-anchor="middle">'
+      + esc([t.p, t.c === "NOM" ? "مرفوع" : t.c === "ACC" ? "منصوب" : t.c === "GEN" ? "مجرور" : ""]
+          .filter(Boolean).join(" · ")) + '</text></g>';
+  }).join("");
   return '<svg viewBox="0 0 ' + W + ' ' + (top + 52) + '" width="' + W + '" height="' + (top + 52) + '">'
     + arcs + words + '</svg>';
 }
@@ -466,7 +798,8 @@ function linearTree(toks){
   return toks.filter(t => t.r).map(t => {
     const head = by[t.h];
     const cas = t.c === "NOM" ? "مرفوع" : t.c === "ACC" ? "منصوب" : t.c === "GEN" ? "مجرور" : t.c || "";
-    return '<div class="lin"><b>' + esc(t.x ? "⟨مقدَّر⟩" : t.u) + '</b> '
+    return '<div class="lin' + (t.w === cur.w ? " cur" : "") + '" data-w="' + t.w + '"><b>'
+      + esc(t.x ? "⟨مقدَّر⟩" : t.u) + '</b> '
       + '<span class="r">' + esc(t.r === "root" ? "عمدة الجملة" : t.r) + '</span>'
       + '<div class="d">' + esc([t.p, cas].filter(Boolean).join("، "))
       + (head && head.t !== t.t && t.r !== "root" ? " — متعلّق بـ «" + esc(head.x ? "مقدَّر" : head.u) + "»" : "")
@@ -477,24 +810,78 @@ function linearTree(toks){
 async function drawTree(){
   let data;
   try { data = await loadTree(cur.s); }
-  catch(e){ F("treeBox").innerHTML = '<p class="hint">مجلّد tree غير مرفوع بعد.</p>'; return; }
+  catch(e){ F("treeBox").innerHTML = '<p class="hint">تعذّر تحميل شجرة هذه السورة.</p>'; return; }
   const sents = sentencesOf(data, cur.v);
   if(!sents.length){ F("treeBox").innerHTML = '<p class="hint">لا شجرة لهذه الآية.</p>'; return; }
   F("treeMeta").textContent = sents.length + " جملة نحويّة";
   F("treeBox").innerHTML = sents.map(st =>
     '<div class="tree">' + (treeMode === "svg" ? svgTree(st.toks) : linearTree(st.toks)) + '</div>').join("");
-  F("linBtn").hidden = treeMode === "lin";
-  F("svgBtn").hidden = treeMode === "svg";
+  F("treeBox").querySelectorAll("[data-w]").forEach(el => el.onclick = () => selectWord(+el.dataset.w));
+}
+function highlightTree(force){
+  if(!TREE[cur.s]) return;
+  if(force || stageMode !== "text") drawTree();
+}
+function setStageMode(m){
+  stageMode = m;
+  ["modeText","modeTree","modeBoth"].forEach(id => F(id).setAttribute("aria-pressed", "false"));
+  F(m === "text" ? "modeText" : m === "tree" ? "modeTree" : "modeBoth").setAttribute("aria-pressed","true");
+  F("ayah").closest(".stageCol").querySelector(".ayah").style.display = m === "tree" ? "none" : "";
+  F("treeStyleBtns").hidden = m === "text";
+  F("treeBox").style.display = m === "text" ? "none" : "";
+  if(m !== "text") drawTree();
 }
 
-/* ——— البحث النحويّ العكسيّ ——— */
+async function goto(s, v){
+  await load();
+  if(!DATA.verses.has(s + ":" + v)){ say("لا توجد آية " + s + ":" + v); return; }
+  cur = { s, v, w:0 }; F("ref").value = s + ":" + v;
+  say(""); drawAyah(); drawPanel();
+  if(stageMode !== "text") drawTree(); else { F("treeBox").innerHTML = ""; F("treeMeta").textContent = ""; }
+}
+
+/* ——— البحث النحويّ العميق ——— */
 function fillSelects(){
   const p = F("qPos");
-  Object.entries(POS).forEach(([k, ar]) => p.insertAdjacentHTML("beforeend",
-    '<option value="' + k + '">' + ar + '</option>'));
+  Object.entries(POS).forEach(([k, ar]) => p.insertAdjacentHTML("beforeend", '<option value="' + k + '">' + ar + '</option>'));
   const f = F("qForm");
-  Object.entries(FORMA).forEach(([k, ar]) => f.insertAdjacentHTML("beforeend",
-    '<option value="' + k.replace(/[()]/g,"") + '">' + ar + '</option>'));
+  Object.entries(FORMA).forEach(([k, ar]) => f.insertAdjacentHTML("beforeend", '<option value="' + k.replace(/[()]/g,"") + '">' + ar + '</option>'));
+}
+let SURAS = null;
+async function loadSurasOnce(){
+  if(SURAS) return SURAS;
+  try{ const r = await fetch("https://api.quran.com/api/v4/chapters?language=ar");
+    if(r.ok) SURAS = (await r.json()).chapters.map(c => ({ id:c.id, name:c.name_arabic })); }catch(e){}
+  if(!SURAS) SURAS = [];
+  return SURAS;
+}
+async function parseSmart(text){
+  const notes = [];
+  const t = text.trim();
+  if(!t) return notes;
+  const suras = await loadSurasOnce();
+  for(const s of suras){
+    if(t.includes(s.name) || t.includes(s.name.replace("ال",""))){
+      F("qSura").value = String(s.id); notes.push("السورة: " + s.name + " (" + s.id + ")"); break;
+    }
+  }
+  const CASE_KW = [["مرفوع","NOM"],["منصوب","ACC"],["مجرور","GEN"]];
+  for(const [kw, code] of CASE_KW) if(t.includes(kw)){ F("qCase").value = code; notes.push("الحالة: " + kw); break; }
+  if(t.includes("مبني للمجهول") || t.includes("للمجهول")){ F("qVoice").value = "PASS"; notes.push("البناء: للمجهول"); }
+  else if(t.includes("للمعلوم")){ F("qVoice").value = "ACTV"; notes.push("البناء: للمعلوم"); }
+  if(t.includes("ماضٍ") || t.includes("ماضي")){ F("qTense").value = "PERF"; notes.push("الزمن: ماضٍ"); }
+  else if(t.includes("مضارع")){ F("qTense").value = "IMPF"; notes.push("الزمن: مضارع"); }
+  else if(t.includes("أمر")){ F("qTense").value = "IMPV"; notes.push("الزمن: أمر"); }
+  if(t.includes("اسم فاعل")){ F("qDeriv").value = "ACT|PCPL"; notes.push("الصيغة: اسم فاعل"); }
+  else if(t.includes("اسم مفعول")){ F("qDeriv").value = "PASS|PCPL"; notes.push("الصيغة: اسم مفعول"); }
+  else if(t.includes("مصدر")){ F("qDeriv").value = "VN"; notes.push("الصيغة: مصدر"); }
+  for(const [word, code] of Object.entries(FORM_WORDS)) if(t.includes("الوزن " + word) || t.includes("وزن " + word)){
+    F("qForm").value = code; notes.push("الوزن: " + word); break; }
+  const posWords = [["فعل","V"],["اسم علم","PN"],["اسم إشارة","DEM"],["اسم موصول","REL"],["ضمير","PRON"],["صفة","ADJ"],["اسم","N"]];
+  for(const [kw, code] of posWords) if(t.includes(kw)){ F("qPos").value = code; notes.push("النوع: " + kw); break; }
+  const rm = t.match(/جذر\s*[:\s]?\s*([\u0621-\u064A]{2,4})/);
+  if(rm){ F("qRoot").value = rm[1]; notes.push("الجذر: " + rm[1]); }
+  return notes;
 }
 async function runSearch(){
   await load();
@@ -517,10 +904,7 @@ async function runSearch(){
     if(deriv === "VN" && feats.indexOf("|VN") < 0) continue;
     if(deriv === "ACT|PCPL" && !(feats.indexOf("|ACT|PCPL") >= 0)) continue;
     if(deriv === "PASS|PCPL" && !(feats.indexOf("|PASS|PCPL") >= 0)) continue;
-    if(root){
-      const m = feats.match(/ROOT:([^|]+)/);
-      if(!m || norm(bw(m[1])) !== root) continue;
-    }
+    if(root){ const m = feats.match(/ROOT:([^|]+)/); if(!m || norm(bw(m[1])) !== root) continue; }
     out.push([s, v, w]);
     if(out.length > 400) break;
   }
@@ -528,9 +912,48 @@ async function runSearch(){
   F("results").innerHTML = out.slice(0, 60).map(([s, v, w]) => {
     const ws = wordsOf(s, v);
     return '<div class="hit"><div class="ref2">' + s + ":" + v + '</div><p>'
-      + ws.map(([i, t]) => i === w ? '<span class="hl">' + esc(t) + '</span>' : esc(t)).join(" ")
-      + '</p></div>';
+      + ws.map(([i, t]) => i === w ? '<span class="hl">' + esc(t) + '</span>' : esc(t)).join(" ") + '</p></div>';
   }).join("") || '<p class="hint">لا نتائج بهذه القيود.</p>';
+}
+
+/* ——— مكتبتي ——— */
+const LIBKEY = "bunyan:library";
+function libAll(){ try { return JSON.parse(localStorage.getItem(LIBKEY) || "[]"); } catch(e){ return []; } }
+function libSet(a){ try { localStorage.setItem(LIBKEY, JSON.stringify(a)); } catch(e){} F("libCount").textContent = a.length ? a.length + " عنصرًا" : ""; }
+function libSave(item){
+  const a = libAll(); a.unshift(Object.assign({ id: Date.now()+""+Math.floor(Math.random()*1e3), savedAt: new Date().toISOString() }, item));
+  libSet(a); drawLib();
+}
+function drawLib(){
+  const a = libAll();
+  F("libCount").textContent = a.length ? a.length + " عنصرًا" : "";
+  F("libList").innerHTML = a.length ? a.map(it =>
+    '<div class="libitem"><div class="h"><span class="ref">' + esc(it.ref) + '</span>'
+    + '<span class="sub">' + new Date(it.savedAt).toLocaleDateString("ar") + '</span></div>'
+    + '<p class="t">' + esc(it.text) + '</p>'
+    + (it.note ? '<div class="n">' + esc(it.note) + '</div>' : "")
+    + '<div class="acts"><button data-go="' + it.surah + ':' + it.ayah + '">اذهب إليها</button>'
+    + '<button class="danger" data-del="' + it.id + '">حذف</button></div></div>').join("")
+    : '<p class="hint">لم تحفظ شيئًا بعد. من لوحة الكلمة أو شريط الآية اضغط «احفظ».</p>';
+  F("libList").querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
+    const [s,v] = b.dataset.go.split(":").map(Number); F("tabAyah").click(); goto(s, v);
+  });
+  F("libList").querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    libSet(libAll().filter(x => x.id !== b.dataset.del)); drawLib();
+  });
+}
+function citeText(it){
+  return "بُنيان — المختبر اللغويّ للقرآن، إعداد د. محمد دركوشي، " + it.ref + "، " + it.text
+    + (it.note ? " — ملاحظة الباحث: " + it.note : "") + "، تاريخ الحفظ " + new Date(it.savedAt).toLocaleDateString("ar");
+}
+function download(name, text, mime){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["\ufeff" + text], { type: mime })); a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; } catch(e){}
+  const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch(e){} ta.remove(); return true;
 }
 
 /* ——— الربط ——— */
@@ -541,20 +964,68 @@ F("go").onclick = () => {
 F("ref").addEventListener("keydown", e => { if(e.key === "Enter") F("go").click(); });
 F("next").onclick = () => goto(cur.s, cur.v + 1);
 F("prev").onclick = () => cur.v > 1 ? goto(cur.s, cur.v - 1) : goto(Math.max(1, cur.s - 1), 1);
-F("treeBtn").onclick = drawTree;
-F("linBtn").onclick = () => { treeMode = "lin"; drawTree(); };
-F("svgBtn").onclick = () => { treeMode = "svg"; drawTree(); };
+
+F("modeText").onclick = () => setStageMode("text");
+F("modeTree").onclick = () => setStageMode("tree");
+F("modeBoth").onclick = () => setStageMode("both");
+F("svgBtn").onclick = () => { treeMode = "svg"; F("svgBtn").setAttribute("aria-pressed","true"); F("linBtn").setAttribute("aria-pressed","false"); drawTree(); };
+F("linBtn").onclick = () => { treeMode = "lin"; F("linBtn").setAttribute("aria-pressed","true"); F("svgBtn").setAttribute("aria-pressed","false"); drawTree(); };
+
+F("roleStudent").onclick = () => { role = "طالب"; localStorage.setItem("bunyan:role", role);
+  F("roleStudent").setAttribute("aria-pressed","true"); F("roleResearcher").setAttribute("aria-pressed","false"); drawPanel(); };
+F("roleResearcher").onclick = () => { role = "باحث"; localStorage.setItem("bunyan:role", role);
+  F("roleResearcher").setAttribute("aria-pressed","true"); F("roleStudent").setAttribute("aria-pressed","false"); drawPanel(); };
+
+F("qsTree").onclick = () => setStageMode(stageMode === "text" ? "both" : "text");
+F("qsSources").onclick = () => { wtab = "d"; drawPanel(); window.scrollTo({top: F("panel").getBoundingClientRect().top + window.scrollY - 80, behavior:"smooth"}); };
+F("qsSimilar").onclick = async () => {
+  if(!cur.w) return say("اختر كلمة أوّلًا");
+  const segs = (DATA.verses.get(cur.s + ":" + cur.v) || []).filter(x => x[0] === cur.w);
+  const st = stemOf(segs);
+  if(!st || !st.root) return say("لا جذر لهذه الكلمة");
+  F("qRoot").value = st.root; F("tabSearch").click(); await runSearch();
+};
+F("qsSaveAyah").onclick = () => {
+  const ws = wordsOf(cur.s, cur.v).map(x => x[1]).join(" ");
+  libSave({ kind:"verse", surah: cur.s, ayah: cur.v, ref: cur.s + ":" + cur.v, text: ws, note: "" });
+  say("حُفظت الآية في مكتبتي");
+};
+
 F("run").onclick = runSearch;
 F("reset").onclick = () => { ["qPos","qCase","qTense","qMood","qVoice","qForm","qDeriv"].forEach(i => F(i).selectedIndex = 0);
-  F("qRoot").value = ""; F("qSura").value = ""; F("results").innerHTML = ""; F("hits").textContent = ""; };
-F("tabAyah").onclick = () => { F("paneAyah").hidden = false; F("paneSearch").hidden = true;
-  F("tabAyah").setAttribute("aria-selected","true"); F("tabSearch").setAttribute("aria-selected","false"); };
-F("tabSearch").onclick = () => { F("paneAyah").hidden = true; F("paneSearch").hidden = false;
-  F("tabSearch").setAttribute("aria-selected","true"); F("tabAyah").setAttribute("aria-selected","false"); };
+  F("qRoot").value = ""; F("qSura").value = ""; F("results").innerHTML = ""; F("hits").textContent = ""; F("parsed").innerHTML = ""; };
+F("smartGo").onclick = async () => {
+  const notes = await parseSmart(F("smartQ").value);
+  F("parsed").innerHTML = notes.length ? "فهمت: " + notes.map(n => "<b>" + esc(n) + "</b>").join("، ") : "لم أستخرج قيودًا من العبارة — عدِّل الحقول يدويًّا.";
+  await runSearch();
+};
 
+F("tabAyah").onclick = () => setTab("Ayah");
+F("tabSearch").onclick = () => setTab("Search");
+F("tabLib").onclick = () => setTab("Lib");
+function setTab(which){
+  ["Ayah","Search","Lib"].forEach(t => { F("pane"+t).hidden = t !== which; F("tab"+t).setAttribute("aria-selected", t===which); });
+  if(which === "Lib") drawLib();
+}
+
+F("libExpJson").onclick = () => { const a = libAll(); if(!a.length) return say("لا محفوظات بعد");
+  download("bunyan-maktabati-" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify(a, null, 1), "application/json"); };
+F("libExpCsv").onclick = () => { const a = libAll(); if(!a.length) return say("لا محفوظات بعد");
+  const q = v => '"' + String(v??"").replace(/"/g,'""') + '"';
+  const head = ["المرجع","النصّ","الملاحظة","تاريخ الحفظ"];
+  download("bunyan-maktabati-" + new Date().toISOString().slice(0,10) + ".csv",
+    [head.map(q).join(","), ...a.map(it => [it.ref, it.text, it.note||"", it.savedAt].map(q).join(","))].join("\n"), "text/csv"); };
+F("libCite").onclick = async () => { const a = libAll(); if(!a.length) return say("لا محفوظات بعد");
+  await copyText(a.map(citeText).join("\n\n")); say("نُسخ التوثيق إلى الحافظة"); };
+F("libPrint").onclick = () => window.print();
+
+/* ——— الإقلاع ——— */
 fillSelects();
+F("treeStyleBtns").hidden = true;
 const p = new URLSearchParams(location.search).get("a");
 const m0 = p && p.match(/(\d+):(\d+)/);
+if(role === "باحث"){ F("roleResearcher").setAttribute("aria-pressed","true"); F("roleStudent").setAttribute("aria-pressed","false"); }
+drawLib();
 goto(m0 ? +m0[1] : 2, m0 ? +m0[2] : 255);
 </script>
 <div class="copyright">
