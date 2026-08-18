@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>جَذْر — معاجم العربية</title>
+<meta name="theme-color" content="#EAE2CE" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="apple-touch-icon" href="./icon-192.png" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" />
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --waraq:#EAE2CE; --waraq2:#F7F2E4; --waraq3:#E1D8C0;
+    --midad:#1C1A15; --khafeef:#6A6355;
+    --zunjufr:#A1222C; --zumurrud:#0F544C; --dhahab:#B08A32;
+  }
+  html,body{margin:0;background:var(--waraq)}
+  body{
+    color:var(--midad); min-height:100vh;
+    padding-bottom:calc(3rem + env(safe-area-inset-bottom));
+    background:radial-gradient(120% 90% at 85% -10%, #F5EFE0 0%, rgba(245,239,224,0) 60%), var(--waraq);
+    font-family:"IBM Plex Sans Arabic","Segoe UI",system-ui,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .naskh{font-family:"Amiri","Noto Naskh Arabic",serif}
+  header{
+    display:flex; align-items:baseline; gap:.7rem; flex-wrap:wrap;
+    padding:calc(1rem + env(safe-area-inset-top)) 1.2rem .85rem;
+    border-bottom:1px solid var(--waraq3); box-shadow:0 1px 0 rgba(176,138,50,.35);
+    position:sticky; top:0; z-index:5; background:rgba(234,226,206,.94); backdrop-filter:blur(6px);
+  }
+  .logo{font-family:"Amiri",serif; font-size:1.6rem; color:var(--zunjufr); line-height:1}
+  .sub{font-size:.72rem; color:var(--khafeef)}
+  .navlink{font-size:.75rem; color:var(--zumurrud); text-decoration:none;
+           border-bottom:1px solid var(--dhahab); margin-inline-start:.6rem}
+  main{max-width:820px; margin:0 auto; padding:0 1rem}
+  .search{display:flex; gap:.5rem; margin-top:1.4rem}
+  input{
+    flex:1; min-width:0; font-family:"Amiri",serif; font-size:1.45rem; padding:.5rem .8rem;
+    background:var(--waraq2); border:1px solid var(--waraq3); border-bottom:2px solid var(--midad);
+    border-radius:3px 3px 0 0; color:var(--midad);
+  }
+  input::placeholder{color:#A79E88}
+  input:focus{outline:2px solid var(--zumurrud); outline-offset:2px}
+  button.go{
+    font-family:inherit; font-size:.9rem; font-weight:600; padding:.5rem 1.1rem; cursor:pointer;
+    background:var(--zumurrud); color:#F7F2E4; border:none; border-radius:3px; white-space:nowrap;
+  }
+  button.go:active{background:#0B403A}
+  .status{font-size:.72rem; color:var(--khafeef); margin-top:.5rem; min-height:1.1em}
+  .chips{display:flex; flex-wrap:wrap; gap:.35rem; align-items:center}
+  .word{
+    font-family:"Amiri",serif; font-size:1.3rem; cursor:pointer; background:none; border:none;
+    color:var(--zumurrud); padding:.1rem .3rem; border-bottom:1px dotted var(--dhahab);
+  }
+  .word.on{color:var(--zunjufr); border-bottom-style:solid}
+  .hint{margin-top:1.6rem; border-top:1px solid var(--waraq3); padding-top:1.2rem}
+  .hint p{font-size:.85rem; color:var(--khafeef); line-height:1.75; margin:0 0 .7rem}
+  .head{margin-top:1.6rem}
+  .rule{height:1px; background:var(--dhahab); opacity:.5}
+  .headin{padding:1rem 0; text-align:center}
+  h1{font-family:"Amiri",serif; color:var(--zunjufr); font-size:clamp(2.2rem,10vw,3.4rem);
+     letter-spacing:.2em; margin:0; line-height:1.1}
+  .headin .kal{font-family:"Amiri",serif; font-size:1.3rem; margin:.3rem 0 0; color:var(--midad)}
+  .sect{font-size:.72rem; letter-spacing:.14em; color:var(--khafeef);
+        margin:1.8rem 0 .8rem; display:flex; align-items:center; gap:.6rem}
+  .sect::after{content:""; flex:1; height:1px; background:var(--waraq3)}
+  .card{display:grid; grid-template-columns:2.6rem 1fr; background:var(--waraq2);
+        border:1px solid var(--waraq3); border-radius:3px; margin-bottom:.7rem; overflow:hidden}
+  .gutter{display:flex; justify-content:center; padding-top:.9rem; background:#F1EADA;
+          border-inline-end:1px solid var(--waraq3); font-family:"Amiri",serif;
+          font-size:1.05rem; color:var(--zumurrud)}
+  .body{padding:.8rem .95rem .9rem; min-width:0}
+  .src{display:flex; align-items:baseline; gap:.5rem; flex-wrap:wrap}
+  .src b{font-size:.9rem}
+  .src i{font-style:normal; font-size:.72rem; color:var(--khafeef)}
+  .tag{font-size:.65rem; padding:.1rem .4rem; border-radius:2px; color:var(--zumurrud);
+       border:1px solid rgba(15,84,76,.4); background:rgba(15,84,76,.06)}
+  .nass{font-family:"Amiri",serif; font-size:1.16rem; line-height:2; margin:.45rem 0 0;
+        white-space:pre-wrap; overflow-wrap:break-word}
+  .nass.clip{max-height:15rem; overflow:hidden; -webkit-mask-image:linear-gradient(#000 72%,transparent);
+             mask-image:linear-gradient(#000 72%,transparent)}
+  .more{font-family:inherit; font-size:.76rem; background:none; border:none; cursor:pointer;
+        color:var(--zumurrud); padding:.45rem 0 0; text-decoration:underline}
+  .out{font-size:.74rem; color:var(--zumurrud); text-decoration:none; border-bottom:1px solid var(--dhahab)}
+  .none{font-size:.82rem; color:var(--khafeef); margin:.4rem 0 0; line-height:1.7}
+  .aya{border-inline-start:2px solid var(--dhahab); padding-inline-start:.8rem; margin-bottom:.85rem}
+  .aya p{font-family:"Amiri",serif; font-size:1.2rem; line-height:2; margin:0}
+  .aya cite{font-style:normal; font-size:.72rem; color:var(--khafeef)}
+  .occ{border-inline-start:2px solid var(--waraq3); padding-inline-start:.85rem; margin-bottom:1.1rem}
+  .occ .ref{font-size:.72rem; color:var(--zunjufr); letter-spacing:.03em}
+  .occ .ayah{font-family:"Amiri",serif; font-size:1.22rem; line-height:2.1; margin:.2rem 0 .35rem}
+  .occ .hl{color:var(--zunjufr); font-weight:700}
+  .occ .irab{font-size:.82rem; line-height:1.85; color:var(--midad)}
+  .occ .irab u{text-decoration:none; font-family:"Amiri",serif; font-size:1.05rem; color:var(--zumurrud)}
+  .khaz{display:grid; gap:.4rem}
+  .khaz a{display:flex; justify-content:space-between; gap:.6rem; flex-wrap:wrap; align-items:baseline;
+          padding:.6rem .8rem; background:var(--waraq2); border:1px solid var(--waraq3);
+          border-radius:3px; text-decoration:none; color:var(--midad); font-size:.88rem}
+  .khaz span{font-size:.72rem; color:var(--khafeef)}
+  .load{margin-top:2rem; text-align:center; font-family:"Amiri",serif; font-size:1.3rem; color:var(--khafeef)}
+  .note{margin-top:1.5rem; padding:.7rem .85rem; border:1px dashed var(--waraq3); border-radius:3px;
+        font-size:.75rem; line-height:1.8; color:var(--khafeef)}
+  .note a{color:var(--zumurrud)}
+  .hist{margin-top:2rem; padding-top:1rem; border-top:1px solid var(--waraq3)}
+  .sign{margin-top:2.6rem; padding-top:1.3rem; border-top:1px solid var(--dhahab);
+        display:flex; align-items:center; gap:.85rem; justify-content:center; text-align:start}
+  .sign img, .sign .fallback{width:56px; height:56px; border-radius:50%; object-fit:cover; flex:none;
+        border:1px solid var(--dhahab); background:var(--waraq2)}
+  .sign .fallback{display:flex; align-items:center; justify-content:center;
+        font-family:"Amiri",serif; font-size:1.5rem; color:var(--zunjufr)}
+  .sign b{display:block; font-family:"Amiri",serif; font-size:1.3rem; font-weight:400}
+  .sign span{font-size:.73rem; color:var(--khafeef)}
+  .sign a{color:var(--zumurrud); text-decoration:none; border-bottom:1px solid var(--dhahab)}
+  @media (max-width:480px){ input{font-size:1.2rem} .card{grid-template-columns:2.2rem 1fr} }
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">جَذْر</span>
+  <span class="sub">لسان العرب · مقاييس اللغة · المفردات · إعراب القرآن</span>
+  <span style="flex:1"></span>
+  <a class="navlink" href="./mukhtabar.html">المختبر</a>
+  <a class="navlink" href="./bunyan.html">محرِّر التقدير</a>
+</header>
+
+<main>
+  <div class="search">
+    <input id="q" placeholder="اكتب كلمة أو جذرًا…" spellcheck="false" aria-label="الكلمة المطلوبة" />
+    <button class="go" id="go">ابحث</button>
+  </div>
+  <div class="status" id="status"></div>
+
+  <div id="out"></div>
+
+  <section class="hint" id="hint">
+    <p>اكتب كلمة، فيردّها التطبيق إلى جذرها، ثم يعرض نصّ المعاجم فيها كما هو: لسان العرب لابن منظور،
+       ومقاييس اللغة لابن فارس، والمفردات للراغب الأصفهاني، وشواهدها من القرآن. أو ابدأ بإحدى هذه:</p>
+    <div class="chips" id="amthila"></div>
+  </section>
+
+  <section class="hist" id="histbox" hidden>
+    <h2 class="sect">بحثتَ قبل قليل</h2>
+    <div class="chips" id="hist"></div>
+  </section>
+
+  <footer class="sign" id="sign"></footer>
+</main>
+
+<script>
+/* ══════════ بيانات صاحب التطبيق ══════════ */
+const ISMI   = "د. محمد دركوشي";
+const WASFI  = "جمعه وأعدّه";
+const SURATI = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCAFAAUADASIAAhEBAxEB/8QAHQAAAQQDAQEAAAAAAAAAAAAAAwIEBQYAAQcICf/EAEIQAAEDAgQDBgMHAQcEAQUAAAEAAgMEEQUSITEGQVEHEyJhcYEykaEIFCNCUrHB0RUkM2Jy4fEWgpLwF0NTY3Oy/8QAGwEAAgMBAQEAAAAAAAAAAAAAAgMBBAUABgf/xAArEQACAgEEAgIBBAEFAAAAAAAAAQIRAwQSITEFQSJREwYUMmFCFSNxkaH/2gAMAwEAAhEDEQA/ALKLLHLXNYXWV6KpFFu2CeLcvdaAulHxapVkyKFyYgt+aSRuirRb5IkLYNl2uDmkghWOjmFTTh3PYqBDfJP8KmMUxjPwu+hUTjxYcJc0S2XRac24KLlWi1KsNobObohubdO3MHNAcLKbOaJLAqkhroXH0Us+PUkKt0bzFUNOwVoj8cTXb3Cq5Y1IdB2hsWjNqsy9EZzBmSSLXQMkG1pJ13ThkIOrtAN/JIZ8QAF7/ROc4ZtdztwP5VPI2WICWRtbva60R0cbLYjdvuT0RGizdOaUrGASy/8AwkBgI1TkstzSe6A1RxdMhoE5jSBoEN8QOosCOaMW2K0QU7sT0wAGluS05qIRqstpshiqCcrAEdL6/RY0i9re3VLdYDZDuHmzeS6ZMTb4QNWkEIJGicNOm+v7ocrdb23S8c+eQpwtcDc2CRluSi2vcHkkt0P9VaWQr7AZYVqwRiLcrpFrHZFuIqgTmgoLmEFOShvF9UMgo9jfKtPCcOYDrsUJzbWKhBtjdw6JFyEdwQ3C2+qVJtMmNEB15JBOYpRN7rVls1zRQsy3IBYdAAFgW3XuAmULMAW2t10WWtoiMFhc8kSQLZmSyVD4XjXcrC7MLLTQbjXZS1wcuyyxnNGDodFvKhYfJenaX2AAumWM8R0mGRkZwX22G6pTmoW5FuEXLofvytF3EBMKjEqKEkPmbccgVS6/iOrrbhr3Nb5aKNdJJIbueblZuXykIuoouw0Lf8mX6PG6HOCJRcFWagxyhfCAJSuNa8ySfMpzTySsALJHNt0Kpy8q5doetCl0ztjJoajWORrvQrbm8lyii4grqEtOfvGjkd/mrpgvGFPXtEc5yv213/3VnFrMeTjpiMmllDksbGEHRGjZprbMkU8jJQHNcC07EJzGwuOgAHmimuQIiclxY6nySgwgAck0xXH8KwIWratrZLX7lozSH25e6qGIdp00jyzDaNkDOUk/jcfYaBVpZIx7ZZx4Mk+kXwRF2wukyZYx43xt/wBTgFymq4oxqu/xa+a3RhyD6KOfLLI68j3vd/mcSkvVRRbj4+T7Z111TTB1vvVPf/8Aa3+qXo4Xa5pHUG65Exmlzl+SNBV1NI/NDNLERsWOIXLXL6JfjH6Z1UjqkFl1SsP42rYC1tYxlUzmbZX/AD2KtmGYvQ4wy9LL+IPiifo4f1VrHnhPopZtLkx9oK5t9CEMss640Tp7TbZBIsn1ZWboE7qFjXh+hC29p0ISS3mNEuUA1MS5oQiLEooJJsUh25RwBkJJ8lpwvos567LHDopvkirQMtsUkjRFsVos0RtHJAg02Qi4OkdGL3ba/knAFtOSG49VFnNAHjVCc26O4XCGQlzJiVo6LW6I5I5rbSM5mLQFkrmttF+SYLNW5lEA8NlsN8V+SWWg7IiBDRblqUdkbWNdI+wA1JKVBEDqdB5qr8UcTthzQU7rlugHU9SkajPHFHdIbhwvJKkO+IOKjSs+70zh3jthfYdSqiyaSqlMkry883OKjnPkqHF7nFzn6ucd3Jw11mgW2XmNRqJZZW+jfxYVjXBKMLdwim2nmo6KYtOpTyGZrxvY9FRnjLKkGaLosHgeARoUiNtyj93ZVnwMX2ODFosaxzHAtNnDYpxTtL2C+40RhE1vieBYakpSm06DcbRN8O8UPo5Gx1Txl5lxsCP6ovEnaHPM11NhBNLEdDOR+I//AE/pHnuqlU1AJBYw3O3kPNNmxl7tRneea1fzzUKkJx6eO7czPG6QucXOcdS5xuT7o0TLm5TmKmLhd415BOoqYA3tZVHbds0IRAxwjLqCtlgvz8k7awNukmLO7wi7lzY5DRpd3mUg26p0ISRY28tURtNK4Wc36p1HSANAc3XyQI6yPFLlNna35rO6lge2SJ7mvabhzTYgqSNGTqCfdYaZ7AQW3H6lKbT4IaTVMm8B4wE2SlxUhkhOVs9rNd5O6Hz2VkkYAuaSRCUEAaqa4d4kfSPZQV7y6A+GOVx/w/I+X7LT02rv4zMbWaCvnD/otzm6aIB2TpwQXC11el9mVH6AgAhJLbomVwNhYjz5Ldl0GTJDdw6rQvYAj3RHt1tukG40UOVOwoxNWWWSsulys+SNTtEUIcLknmgvFwnDrXKE4XQtnDcgbFIkbYoxFkh+yFuzqKuRoFrmlXsEnRb7M1mg0lwHVGDUmJt7uKK3S/yCNKhbNhhcQ0IrYmjQbLGjS/VZNIIIHSu2aFzdK2QlboiOKMcbhtI6GMgSOFienkubOe+pldJIT6J7juJvxKveS45GuIHmeqatbYWHLdeW1uoeWb+keh02FY4V7CRgBui2ktNtURtjrZUGy1Qpp0RGOLTokNZm1Sw2wsusgkKGozvDXFTsVOCBpoqvSPy1DB1KutHCXR3Kqah1yPxcmRxW5apni1QIi2nBDbjM8/sFLNYGEud8IBJ9FVZ3yVc0kjtS92Y+QQ6SG6W4ZLgyImR5fmJbyT+kaDILBM4iB4eik6GIMB1uXG6ty5YUB5G0NGqILAeEIb/C1LYCQAkt80Wo8GMBc7XZOY4rEFqQyMgXTqNg06rqCNZXbhFjubdUdkNxsltgIO2iKjkJa2481vJcWIsUYM1tyWnxuGqFxZLGc1KHjMNHdUxqKISDYX9FNht23sm80Idq3Qoaa5I7HfC2MudbC6p5MjBeFzvzNH5fUfsrERe45KjTU72ls8JLJonBzXDqFcsPrm4jQx1LdC8eIfpdzC1dJn3x2y7Rh67T7Jb49MJY5bHXzSCOSKdDdIOqtJlAG5oScqI5at5JU3YcRCQQAjZAeZWnMNtUMZUE1Y2cCUh3RHcyxuDcFCe250TlOwNrAuGiQRcIjtCQkHZciKKqdFo9QlEc73WAX9Fv+zKYZgsAEpo25JEdxrdFY0uGxTkKYtt7qI4trvueFPa02c7/ANCmBoVS+PqxhDIQfGTt0sqmtybMTZa0cN+RFQYLuv0RTuQkxNyMAO/NK53XkZSPRpC2NLtBqiMALgOQSIwdLaIgAJuEu+RklwHPhb5rRF9ll7hZsjbsVtoyA5aqIj9S6Dh7c0NyNFz1nhmYRvm3XRcIaTSNvroqesfxQ/ADxd/cYfLbeSzB7qsuBy5RsN1P8RyWfFTg6tbmt5n/AGUK/K3w8ynaZbcS/sOStmRRtFtrnfyUrSx+EXOqjqdl73AvdSkHhFzsibGQVCpb2S6Y3dlKxwzCwSoW2kvZL9lhDpp0sjwtNx6puDc2TyFuoN0ceTmx5HtZHDCdkOFt9DZPWMtoLHRPirOsbmPkUsRktvZG7q+6U2MtGoKLYduG5Z4bJpKzKb7qSey5JCavjHS+qXOJMRpKy7dOadcNSGGrnpSfBI3vWDzGhSC2w2WqK1PiVPLfTNlPodEvC9mRCtVj342ixPFjYoZ0KdSMBbcnVNnttzutezzjQki6warYGq0N0uQUTegWXWjZwSQ6yEITIL+SG5mt+d0V7hobaobm3dcFSiewLo9zukOanB3IQnizt9FKyVwQ4WVADUhbvqlOCyy9NExGLjanLNG2TZjrFOW3TUAJ2a5x0sLrlXEtcazGZRe7WHKF1WtBbRSuG+VcYeHS1c7nanOT9VieXm6UTW8ZFW5DguAOq2DmPVB15osVuf8AyvO+zZSDDQCyWNFpoBRGhQw2KadFuyz8oC2CuAaFQtLp4x5hdOwikP3WJo521XPsDpxU1zQ/Ro1J6DmVf8P4kp4JI42Uj3QN0zhwDvWyralOdJD9PjcrpFfxiXvcSqpG2LWOyN9tFHaucC7dBbiUYr5aCV1p2kuc07i50KeNprPzOvbkrEeFQyUGnyFgZZodbVPGm7R5pvFueicxAOGh2QsmKDx62RwywvZABAIvyT2GzhrzUIYIjF3BPoxbQJu2PxqQjjGUG1ijicmHgt7qUhYDptYXUZHZhuU+hluAR81Zg0uyJDowDQpWUFhahd9pYbrQlvonWhfLEOba6bFhJsnTzfkkBoG6RKh0RvJHZqayty5XDcOBUkY8+iZVsYZsqsmtyCbtFkPib6oJGhLhvsEa1mN9B+yDKdVr3weaa5Bm1wsLd+oSxa+yVYXLklzGKIAAg3WOZcXCKWDbnzWGPRcmc0NXfFYrR202RXtub2SSLaIrBBEX/qhvHVFeCNQkP1C5EvoqJOqxZZKGq9XFGC2YweIXKaUfE2H1NfJRtlAfGddUequymleDqGErj09Q+DFpZ43Frw8kOB1CpazVPA40XNJpllTs7nUsEtLJazgWFcbrYPuuJVEQ2Dz/AFVu4a48aYzBWNzPLSBfZ39FU8TqG1WKTzNtZ7zZZvkc8MsIyRe0WGWOTTAblEh0cb78j0SQM2qLA27vTVYcmasAjEdo0Q2NtZHy2CXuDa4EkFYdls6arLo07AZMYJC6KhrKk6CwjB9SqtwtiteeIp3skfJTOLnzNcbgC+hHQroj8NNNwG+otYmRuY9MwI/oqpwZhkFLgss85aySrcXZifyDQfyfdKjK3ZsaFqGGT+yWxjDYMRq8PxancBNE7uZD+uM8j6H91JNa2QWHJQeGzRh7YoahtQxt2F7DcZgpmmu11jzKanfZXz9m3MDDZFp9AQtyR+JabcbKGgIIdBoNuaPC7KU2Y8hHiIebX1UIlj+IZjcJ7ELtIKb08JLAAnTGFqYkc2EazM0pzTjKN0iEtIsUeMND8vNPjH2DYsDS6waXRu6s3ayQ5lgpaIsE51iLrV77WW3suehSchSpBoMx2VvmmVYe8e1o3c4D6o7yQLapFLF3+I07N7PzH0GqqJXkSJk6i2T0osco5Ju8c+adSN8V7oTm6rXbPPf2CaNTcdAlLbmrVktjEa56rCUoDRIedLWXI5oEd1qwJ1Wzok3BJUtnJCCEKRumnNOraIL22KhMmUeCnFZZLLbnRJAsdV69I85I1LH3kL2WvmaRb2XGMTjdTYtPG8EEP2K7YG2Gy5Xx5GyPG7gWLgST7rM8tC4KRo+NnUmiFtldcbJ1H4yDoE1btZOYNFgTXBsRfyHI0GyXGSPLqhk6JTSdQFVLCHlO3PlJ9E4dqbDlug0vwke4COwWBPMpTGXwDcNESlhE9VHE42aTqfJbawuKsfA3Dj8Zxhpc0mCLxOd1PIIZZFGICiXDivD+67Ja9gFnubG7Tld4/quTcW1DcPlgw9l2NYwNFtNAF3zj2jEfZ7iMDGk5Y2H0s9pXEOI6CLiLCXYwC9k9Lo5rRo624/dThXwVl/x804u/sY8D4LW0NLJLVBrYJHmWEXu435noFbmizwfJBpJmVEF4rd2A0Mtta2iMb30TvZGWW6QduuhRAweybtffQp5CLixQkegL9De+iXDWU8DryzMZz8TrIdcx/cusQ0kaEjRcu4m4cxzEawuZVvc2+lnWsjikL9cHT8Q4/wAPwdgkL4Zohpdkl3fJLw/tGw7FXBlNZsh3bMcg9ly3Cuz3Fa6E09XWDxDQkXI9Dup2n+z/AC1g1x2YBwuLN+E/NWIqPViZSl9HU4McpQ+0lVTtdfYPCloqyKUhzXNcLbg6LzxxD2M8S4L+IysNexnNkha63SxSuF8R4gwKobDFWuhYSM0M5J+hRyaiFByfaPRzKsA7kjoliojc6youA47PW98Z3Dwu8JHRT4qHspzM82AGY3SXkHqNk258bnaFYGggdFXY8ajEfeOeGtO10GfjjCaGVkFViNPDI7YPdb6oXLd0c0olnkbfZFwSC9ZLKR/hsy+5VYl4yoo42v8AvMGR5AY9rg4O8gRzV04fEc2HmqjcHsmfcEdBogxw+dsq6if+20OpG8+SbuFincjL+iaPa4u/lXWzKSEuSQkte43BBsDYHr5rYbdxN9NrIbGJGi4W0ScwOiXILE6BCA10CGwqEuuTohuuBmAvrqE4I1uOSRkzXsALckMmEkjVyWhzfktWBbfREAs3RIuLaIYumS+SnWWgPEtZiPRKb1XtjzDQtoNrHdct7RIzHjcZtoWH911Nt/RUbtMw4yU8dY1tzHYk25bH+FS8jDdhf9FrQyrIUeMXRWHKfVAiN/kjW0BWAlcTYbp2OGuzMI5o0DC8iyaROOa3MqZpYgxmb2Co5FtZcxvdyLbGGNDefNFa0uIFt1prcxTyngJIsNVUnOhyg2xUNOQDYXsNV2ngXCKemwindCAe8aHvf+okbLlMMIZESRYAXJ6rsPAFPLBw7TiW97XseV1VUt8qC1EdmO0TGI0sFThlXT1VhBJC9shOwaQblcEgDMLbJCQZKedt3XG52vb0Xf8AEKQYhQVNI52UTxOjv0uCFxKsgfQSy02IRiOelJa9rttOY8jur+JfE7x0l8kQmCQMpKXuIi4szEtzchfQeylBYO1TGklEn4jNn6hOnO8J6piRZkuRTWeMWPqpGmbew3uo6F9zqpejb8JQ0DY4+6iSMiwIO4IVXxvh+aOKSSjmkhlGrRa7PkVdYxlsTslVNGypiJa0E8x1R0QcQh44xzBazucRpGyR58olhjvr0tf+VbcP7ZMLw6R0FdXNp5GaOjkpX5h8ipqt4RoaqRwkbbMblrhzURUcC07XBzXU05aCGmenbI5gPIE+XVNg0Q1ZG492pvxLIzDmVFR3xIjy0xAd5i+6j8RwjEKqGCSqcx0slnBoblcwc7q4UfDYp5RUSvfmb8JduPQck7kwgPfnsSTueaCa5Gx4QvgzAQ5rAHEP89lLcZ1jcAwWUSMMr3+FjW9U84ajEUoAtoOSTxjh4xCNoe0vYA5rgDrqFEo1Gzl2cppcSr8bd3LKuCBx0Ay6j5odb2FVOKudVS45IZJNTnjzfymXEOEV+ANbLgjBiL43XfBMLyZPK2/qFP8ADXanBT07Yq+CswuoaBmgqGOkjOnI7t910VKC3RZE1GT2tFareyjiDATFTUla3EYHyBsUQLoy13IgbBek+CsIr8A4Zo8OxGcTVEbPEQ0DKTqRcb+qh8ApzilZRVEsbGHR4a12YDmTdXiXclHjyOatmZqkovahs/QJu4WOycv1OyBINwE5OynQ3NiSRzSS2zja6IR5arGsve65sNAiCd1qwRS3XZIc2yEkEbbXstgAHVbLd7C6xgzC3MIWEY4XFrIAjLLgXILr68k6cLaW0/ZBsW3FylyYS6KTqSltsEPxcwltPRe3TPMNBE0xahZiNDJA9oII2TxoulAAAm17BHKKkqZEZOLtHEKqjkw6rfA8aNJsT0W2nQgqT4ql7zGJxb4HEKNbtovKzW2TSPQp7kmxdOM9QxvUhWWWnEZBDbW0VbojapYbbOCus0AmhDmjdtx5rK1s9skX9Krixu2jAa1w2IT6lpNMx0aPqkUPjhYDyOVSgaGt+GwCyc2R3RoYoIXQYfJiFXFSxtLy9wuB0Xa8OpG0VFFA212tANlUuz/A2Q07q6Vt5JD4SeQVyqJ4aKmkqaiWOCCFhfJJI4Naxo1JJOwTdNBvkz9dm3S2L0EF7rgPaa9mI8TYrnfIA13deB2XRoAsrBP280PEP9tDhkSf2dhEXeVGKyts1xN7Njaettzy1sueVFfLibHVk7i+WoHevcdyXalaX45Q4kToIu3Mf4eBExsTRZoaGhSOS8ZBPJRUEga9o+al4zdhKll5g4D4wCrBRi+UqBZdsgKmqOQ6dEKFko1wLUSAyX0GibsOosFI0zQ4J0FYRj6fvh4mj5JAoWMBIYB5p+17GtudAN1B4/xA2hp5HN/KCfZOaSQSTfACvLWOyuc0HzKZSTFjLAi5URhjZca/vEr3ZnagX2TuanniqGhwIY3mlf2O2Vwyx8OhzX3ClJx3znNdqb3THBiI4g4c+SkCHMzPABNjp1Rzh8QXHkq+K8L088uaWIui5Obo5nunGHcI4PC05Ye/zDKTKcxt019VYaeRlTE11viGo6JyyARg2aAq04tIFuhxw9SNiqiGizYo7AfQKdlOiY4HFaCWQj4nW+Seu10R4/jGjH1Et2RsA8boLhp6o8nNBedQmKQqgGYFxBFkS3XbrySTa9koeE6GyhMmjLdFndg8rrZ/91Wx57eqNMgGY/C6w15BN3Nu5rwbJz3ni23CC4X8Q28kDYSNFxOlkN40RbBw890KXw7pUmGijSaNBJ19VkdzsVmjT8OZx1ASwwsuTud17hdnmX0LY7KCOq3ffzWg2+qWG+V02xZyPihvd47UNt8VioxhsCrHx/ROpccjm0yStNreX/KrTSRdeXzqsjR6DG7gmOKbSoZ5lX6mjz0kOn5Quf07TJVRNvu4BdLpIvwQNLAho9AsLyb6ZqaH2Jhpmxg5bam6dtjMs0UTd3uDQtRx2aG21PJO6BpGJ09m5jnG3VYjlbNKqXB1nBqMUdBDAPytF15y+1d2rOdIOAsIqLMYBLib2H4ju2H0G5HoOS6l2xdr9D2X8PBsTo58dq47UdLe+T/8r+jR9Tp1Xh3Fa2pxCulq6yd89TUuM0srzdz3ONySV6zxumpKbPM5p27O3YDgUmH/AGdK6enafvFa779MW7mMPDQPQNF/dSNK4Pw+FzdjCwj/AMQrH2Nfdcf7MqHD57OhkppKSVvu5p/e6reHUc+H0zsNqxaooHOpJb8yzQH3bY+6jVXb/wCTU8fJbWhzHOdCp6hmD4wAbkbqqF5YD5GylMKrRca+RVZMuSRPlt36qQoZLAA6dEzpvHcpxCQDe6lKhTJqmBdYndSEb+7aeSjaQktvuk1Va5rhG34j9ExOiUO6urcbRx3L3KPrcLZPRTRTOzPlaWk9L9E5pIXk5mi7nGxcUqOnlq5XXPhjuXPPw78kxRb7J/MonPGzYvg+ekjkZDO0fhOkZeOS3mNlvA+0R9dUOwjHaZtBiDTZpBvHL/pPXyXQJuHmVtQ2JzvwjdzybXDR5+Zsq1x5wlheItooo2ticS5rCy+tvzX9efkicaRP7uLdFkwTE4BGWuaC/a/RTgroTeaQ2Y0ctVUeFsAc109HLWyGala03cAS64BH7qfw6knY1/3jxNcTkNrCyBzdUM/JB9MRhta2eRz4iQwuJaCOV1YmuD47+SqNI37rVviH5XFWegBqHxxC5L3Af1SZS9EZWkrLLRQmGihbsct/mlvYbgjkjlvLkEN4uhbMW7djZzfCdLpu4eSfubp6prI2zjcAXXKRKQ2tqt2uluaSRposIsLnl0RbqJoTlAWeHnr5IgaCNQklhAvuOvRGpoGgD7k5khoLnEX0OqM8WI6FILS25G24KCUg0jHNGckDdIlYDYEIrnXOm29/NJfrbqEL6JS5KC2wN7Ld87vRaaOpB/ZFaBbT5r3iR5QwC6ieJeJabhymGc553DwtGpUrV1MGH0slVUPayOMFxJ5riPEGMvx7FJKpzjkucoPIKnr9V+KFR7Zb0en/ACSuXSDYpjVVjVX94qXeTGDZo/qm4803Z5I7R5rzjm5O2bLSXCCwyiKQPN9OfTzXSMDqRVUTJmm/hBI8+a5o4G1k/wAG7QMK4S72LFKo5SLsiiGeS/oNvdU9Xp5Zo1FclrTZVjfy6OqNbc6G1+dlU+0LtDpezyCNkHd1GMStD4oHHSMcnv8A4G5VCxn7QlWwSNwHCYoNLNqKx2dw8wwaLk2JYnV4tWS11fUSVNVO4vklkNy4lBovCtS35+voPU+RVbcY54g4hxLiXFp8Wxerkq62d2Z8jz8gOgHIKJe4vdmKx7jqL7pF16RJJUjFbvlncfs38VNgqqzh6d9s/wDeae557PA+h+a6jx/gZjqGcQUzbxyhsNYB+UjRkh//AJPsvJuA41V8PYtS4rROy1FLIJG9D1B8iLj3XtHhDiGg4u4egrYQ2akrYLPjdrvo5h8wbhU9Tg3cot6bO4NM5RO3JIR+pBhl+7VAcTZp3Vh4v4bm4erMrc0lLJd1PIeY/Sf8w+qrUoE0dxusinF0zfUlNbol0wyoD2A3HVPe88dwdlWMBrszA0nUaKZFSC7dFYDiWnDXF7LFM8brKbB2vrap/gHJCw2ue3KxjM7naNA5p3jfCklfTufV5ZL6d2NdSPpb6pkYti5TjHgoVb2q1UkD4sFoqvEQSXPkZEQyPTS/XloESLtUp56CmpGzTUxjmaZRLGWZxe7r+/0CkarCocNDI8Pj7owjUN0sPNMpqahxUd4WsgqRu4izXpqn6Jhii/5FipOO6CqnbJ95aIxmaSxua7CTpp8/cor6uHG6/DZ6F7Zm0kT4XxyOyO1/Nbz09LKEi4ewySHJiOFZXD4amncWu+Y/lEpeE6dhzUuNzC98omiDi33QTb+y9Dx+KS4ZbXR1uH4jXV3dFzaqNndluoGwN7aC1vqrnQ/dq2ikZGQXMu4N563IC5ezBceoaSo+6Y6Xx5CTmgGW/LS6YcCYpxhT1gGKlslMxxd3gGUvA2GnLZLUmUdRpfxypOy61Tb4rIWAWNjp1srbwvSFz3TkaRiw9Sq/RQPqZGm2aaU39yr7h9E2hpGRNNyNXHqeaXdsTqsu2G32wp0BSHbWRXBDJBdayFsz4gyAQgSM8V/dOSAhPGbQbqLGJjWQWSWm46osjdbFIaA3ddYSE2AGmnRZmt5FFsHBJMXyUbieARGYm2l/kkhosRZGDABfmkkaLnKyUBIWgNdkpwsStWsLrtxJRY4gRmNtOZ2Ci8X4pwjBWnvJxNLrZjNVQ8b45xHEw6Knd93gP6fiPuqxJexlmkDRuXPdb6lerz+SXWJWYeHQvvITXFPGNXxCe7A7mnGgYDv6quRxIE+OYTTaPrWPPSIF5+mijK3jWkhYfusLnuHOU2HyGqzJRy5XukaEXCCpFkZHsGi5TXEsZoMIafvM4722kTNX/Ll7qgYhxTilcS0VL2Rn8rPAPpqfmol7i65c5zid+iOGmrmTBll+iwYxxnXV+aOnJpIDyjPjd6u/oq3JPqQ0anc31WnHTRCcrUIpLgROTYje5KK74j5aIZBtbqjOBzOPQ7FMYCBOHi0WEaN2000S3HMA2w3ukZXC4I8lxwqLmOui652CcfnhzFzgFbLajrX5oHOOkc3T0d+/quSRbpbn5PG0kOuC0jkeqhq0Sj3jXYbScQ4VJTzsEkcguQN2nkWnkQuJ49glXwviTqWo8cEpvDNbR/l5HqFZuw7tJHFmBClqZR/alCGsmBOsjeUg9dj5roXE3DdNxJhUoMIlDhd0Y3B/U3oVS1Gm3K49l7S6t43T6OERzyUcwmZqz83kpN+Kd/ldC7xHcJviWGT4HVmnqQXxuNo5bWDvXoVLcMYFSOqI62plMMTX3JAzbHkNr+ZWXs5o1pZVt3Iv/AtHJFh5qa2lbG8tu14u6Qg7C3InorO+OSoikAiFIxwuXOcC/wB7KDp8b+8ujhpWMo4G6jMbkDqVKVOIiKBpiOZhsMztXPPkOSuwSSozZSblZScWjeHStawiIkgG1rjqonDeEvvL+/mnY64JiizXv6jkujzYZJWQfjxtke/UgaNb6nmg0eHwQtlZTshhbCM8kw1AB5DqfNDs5ssvNcaIOi4YfSUYi+9SGaaUHO883H4QPTkkYTQ1rLzTsjMDC7/EbqACd/ZWukoo3YhHLNmMcQ8Adu3mT9QE8rqLu6meMs/Dq2gEtGgNtEGSKaOx5pR6ZScSlqsVraTDKUmMPaTI1o0HT6/urhieBU9Fg1PLFDlke9ocByuNfa4W+FeHIoqiWslLpKl9muc8attsPoovty4qxLhDgg1OEwxSVEsndB8h/wAK4PitfUpUYWtqByZ3vTLHwpRRd2awyRyPBLGhjg7JbQ3tsVZgdLjVfPDA+NOIOG66Soo8Vr6SWRxe58UpBc463Otjr1XWOE/tS8U4dkjxeGkxmLYue3upv/Juh9wnS0co9clOeXfLcz1o7U2OqEWuFyDcXvZct4b+0nwZjZbHXvqcGmOn95Zmj/8ANv8AIXSsOxWhxiAVOHVlPWQOFxJTyB7fpsqk8Uo9olBXOcfhNrb3CGJCDZzbHryRy251SC3fRKDQh4Bb5oBGtiNEfJ+m3ogk3NtndFAaEm42ShLcWCGXWK0SL6eqFsJIKBdJI3BWNcLhLdZ2y5MkE5tzdDkBDU4IsEB4J2UHWeH8R41qXgjD2Naz9UZDn/7fJVqXFZa1xdPJnf1e4uP1UMxzmODmuII5gpz34qRacDNykGh9+q9VHGo9GW57h6+YEWMhA9U3fI3l803IdA7K8XG4PULecaLgRebXfRJc6+y3dpSSDrYjRQcY8Ftr9Lod7cglvIkzE6GwshnTQ7o0CxJNjdOCNb8yE2O6d9PRc+jkDe3QJIZc2sPmjELO7aRoiTRwhrQ0kNQ5HAu02GiLIe7bcGznaDyCb2sFzOZOcHcUVnB2P0uMURJdC60kd7CWM/Ew+o+tl7W4R4mpMZwykxGim7ylq4xIxw8+R8xsfReDWmy7N9nztB/snFv+lq+a1HXvzUrnHSKf9Po79/Vcjj0RxpwmzGYpKiKATZx+JGANrbjzXMsPoJMArJGl5fQygiRrrl7bbeq7hhNboY5DqNBdRfEnAMGL3qKFwhqHuu8O+Aj+qz9Tp7e6Jd0+opbZFEae/ic6N7ckuVxew3sBpb/ZTUNaKgQOBOVl2ejr/wBFWcQ4fxjhh01Q1kn3Zrg1zy38OT1H8reEY3RPllFRL91dJYtzatDxzus9ylF0y6oJq0W+or35posxy2bExvW58RT2SFzI6ajY0nv3CSQW5cggYQzD8QmbK+WNzmt5O0J6qapqtjqqQiIZaZuVgPxOJ0CW8jC2pDCvqZaTFqeJjDJFVRyv9HDQfW3yVlfOzv4In2c4RXcRsb8lAwicMYzuczo8xdK7QRgnYKeiovutNJX1LXsihZnNxq6w3spU2+ELm0kPKJsdBRmWWSzYwXF7v0jX9l5I7aO1em454tgpMLq+8w2IENaYDG5kguNST4hzBFtCr325ccY5j3B738Pl9NQMmfDVNHxubazXXGwvf6Lyq6STvy6RzjIDqSddFpaXBxukUsrcWWTEKZs5eMlntOo5j0UPIx9Kdblt91N08xxWkFTGbVEQDZB+rzTKqeyNneS+zebirMX6AlzyCp6w2ux3sVNYRxTiWCTipw6tqaKYfnp5Sw/RVqnhs4yPFnHYDknh1a12/I+qiUU+DoyZ27hb7TXE2GZYsVjpsYhG5k/Dlt/qbofcLquD/aP4IxGjfNWyVeHTRsLnQzRF5d5MLLhx9bLx29sjG5reHqOSVHU5tLkO9d0iWmhIPee5eDu1vgzjiYU2EYsBWHakq291K7/TfR3sSrZMwWuBcc/JfOqd8lLK2rge+N7XBxLCQWnk4EbFepOwHtvl4qbHwxxHUh+Ktb/dKt51q2j8jv8AOBz5jzVXUaTbHdEPHO2dqeA42uTohFxjsbXHPTYJxIyztBokFut1mSRZRoAFuZvsiCx2KDGMlg0c7WRWtLXHXQ8lCJZu1whlnoiXstE6KSD5tOsNrrFpKaQAbgG4sPJesMcKyQvYInnT8p/Sf6JLbhxB3C022mt0eWMmMSjcWDv4P8IWEuQbd0t5Mgb4WjKLac/NY1p5owjuEFhKLGwbckbLUsZDQbcrj0RnRanySbW0RJkNUCaGyXJ3PROIqeQsDmOa7/K8fym7gYJQ4C7SdQU5knYxmZliTyROyEaIYHBsgdC4/q1afdE7sR6uIyjUkHSyAKx5bZzWuHmE3LnageFp/KNlxwYh9VNnNmtJsCdgFuqdHljjjuQ0b+fNCD3BuW5stHUELiBNkWF7o3tkjc5hY4FrgbEHkQgpQu42FuupUkHsXsZ7QBx7w2187x/a9AGw1becg/LL6Otr5grrVDVZmhrt14Q7MOPKngHimlxeMOkgB7qqgB/xoT8TfXmPMBe5cHmpsRp6fEaCdtRR1MbZoJWnR7HC4KVlfxGxXJMyRU87clTAyVh5OFwVAcSYFwlheFV2M4lh9NDDBEZJnsblJaNgAOZ29Sp9t3OAtcDT1XnX7TPaYJq6LgzDJs0VI4TV72HR0tvDH/27nzI6LOtyL+lwPLkUE6Xs5DVcVcQHHq7E8JqZcOiqC5kdMw+GKK/hbY8x163Vt4e7XuLcPaIX1Ucsj5ATJLGHG1tB9VUMNxGCpGWXKDzuNFIiliinY8Ai/iGunkUrLK+Gj3GDxmBpNKz0B2SdqEmI4izhvikxPq6i7qGsIAbOdzG4bB45dQuv41GJ8Kqacm3fMMQ9144mjq6qgy0LXurGvY+n7v4mvBvdvnovT3ZzxgOOuEqapm0xClIjrI7WOcD4rdCNfmgwc8nmvP8Aj46bMpY+n/4UGDB4aKR1JURtfS1jLPY4XF9nA+6849rXZ5LwbjkphBdRSDvYXf5Cdj5tOnyXrnHMIL6eqLB46eZ7gP8ALf8A3VO4z4Zh414Ykpixrq2nu6Fx621b6OGi1cL5oxsnMUzyJg9e6grGvJPdu8Lx1CseIUUUmWZrWlpF2m211XMWw2TCq+WmkY5uVxADhra6l8BrhUUzqKV2rR4CeiLLH/JCcb/xYylhfE/UXHVbi1OT9X7p9OGxk944MtocyYvyFxdC4OAPLkgTtEtUwsD+8u079E2qqfu/GwEDmByRXeF7Xg2zi/vzTxgZPHmA12cF10FVojoJ2vbkkN+XqtYTWT4TisUtPM+GWGQSRSsNixwNwQk1lI6nfmaPDvdNqhxIZKN2m101JNUKtxZ747MuNI+P+D6TFbtFW0dzVsH5ZWjU+h0I9VZiPkvLX2YeNThXFJwWeS1NizMrbnQTN1b8xcfJeqJW2NxsdVgarHsm0XoSsQWDcc9Fu1hvdJa7UdEUsPJVbGWBJvskl2iXvqNklxDh0IUWSj5uFuqz2WA9VnNevMYI0ZNwQXWIuOXVSFJlkeYn2yuGR1vPYpgIwBYbkI8JyOBGgOiGQcXTCd2WOfBILSRkhyW0Eac0TEiO8grWjSRuR/8AqA/ohMdmaCEtq+g7o3IwB5F725hCey4035IrtDda5KOSXTGxGcFrgm48LixyfOYXWsT6JrPGSSRuEyMhbVGi27hYDXkslADtLW8lkTs4sdCEp2Z1mnW3VSdVgktoI12BW7BpIAvyv1SdlINCXDVJKWdQkWUkC4nZXgr039l3tKBceB8TmsCXTYY9x57vh99XN9xzXmIKTwfEqjDa2Cqpp3wVELxJHIw2cxwNw4HqCl5I2hmN+j6IYzjlPw9QRVc7H55niKMD8vUk7D+tl5G7UuzWbBKqqxrD5amsoZnumeZjmlaSbkk899SvR3Zxx3TdpPCsOJ1TWSTFopq+nIu1koGpA/S74h6noicQ8KupaCSSjjNXSR/iNiIzOituP8zSLj3SYQjVFvDmniluR4gZM+Fwew+4Vjw/HQIQHyMH+V4JCsHbRwzhGA4+w4LAKeGppm1D4mnwNcSfhHIEclTMHlGSSJzA4OFtAMw8wq+XGmet8fqptpx6Z0vgfHaWLFcPrJH9zDFVxEyPaQxviF/Fy913mfBZuAuMmcRUBc7Ba9whr42j/CBPhefIEjVeZeFpjTGallGaCcGN7TsQR/C9Z9mPE8PFPCVOajK6pp4xR1LHi/jaLa+Tm2PuVXwpW4gfqLFkcIZ+10yTqI2PxWohdYsldY9LFqpjKd1BiElO8cyz3BVthZkqAW7NNgOQA0A+SjOLaHJWipj/APrNEgPmND/CuQltyJnlH/Gjzb9oLgf7nXNxeliAZVXebDaQDxD3GvqFxOknfTzMkYbEHRe1uMuH4+MOFqihNhMW54Sfyyt1H9PdeN8fwuTC697HRmMFxGU/lcDYt9irskVn1f0TFQGV9K2paA7SzgmJiAFmtDQOQSOH60RzdxIfBJpbzT+rg+7zFp25HqFVfDod2rGLWZo3Dm3xD+UqCQxuuNjutuGRwcNkM3jc5g2vcXRdohD6WFs8eV2oKg6iIwukhf7eanaZ4kZbXogYnRmeIOaPxG/D5jouhKnR042rEcG4lPh+IQVMDy2ellbUROHItN/4X0BwfFIsdwKixWDWOrgZO3/uFyP3XzwwCTu8VjHI3C9q9g/FmH43wTS4PFLauwpndTxO+LLmOVw6t1t5FUvIQvkPC+C/Foz+RR2m7AedkOWPosjd7rG6LXZj97jYhDO1kV+5br1CGPiv7IH2TE+bRKVG8NNytNAO6zuyRcH2XsjHHNg4XFkoDVNWuLDfmnMUjX+vNdRI9f8Aj4fKwakDOPUf7JtAbsuNk6ongyZTsdEwcDTTyU5v4HaeiBfQcuVY6IukNFnWSmEFhN0m9jdTSBTFlAcNSEbNpskuAKiUfaCTGM0eR4eNvJKY7MNN0Z4uLWTV7DEQ4C46KYu+GQwrtAh8ltrg9pHNZbRTVEPk1pbnf6LRFgCFhGqW0HY7LiErBbFEa6xvdJc3KVjSQb9Fx3R1nsK7Sf8AofiuE1jz/ZNdanrW7gN/LJbq0m/oSvZEkj8KyTNkEtFLYtkvcC+2vQ8ivnLSzd04W2XsL7NXaXHxRgD+DsWkEtbQRf3cyG/f0/6fMs29LdFVyLa7LCdo5v8AaDpI2Y6xsVrMgc1oH6RJcfRy5HhpLZiAOV16E+0HwVUYXU0OItD5aF7nQd6dSwOGjXeYIFjzC8+926lqMpFi1xCTKVtnp/HSvHGS9FlopCS11rOGlxuuh8Gcd1nAWKNxKCP7zSVLWsqqYmwlHJw6OGtiub4dUHKL79R/IU2Z+9pBERYjbzVCbcZWj2MMWPUYXiyK0z1XgePYbxNhzMUwecTU7zZzSLPidza4cipPHqbv8KErRd1OQfVp0K8y9n3GFVwbjLKqNznUkhDKqEHSRnX1G4XqnD5IMTw9j4nNlp6iLwuGzmkXB+RVmObe0zwHl/Gy0WSu4vooERMMpiOzjouCdvXBYpsSdiFNHaKvvJoNGzDce41+a9C11KWh1wRJGbe4UFxjw6zi7heqog0feA3vID0kGo+e3utWL3R4MZ0nf2eJo3mJ9xcOBVvieMWwtsrfFLHo4KC4lw51BiDyWFjXk3aR8LhuE54XxAQVPdPP4cnhcEnKrjuJxuntZt4sbHRIc3Mzzbpfy5KTxahNPM4jVpNx6JjGAXWOx0KVCVhVTE0zzE4X+EmxUs1g0udDz6Ji2j0tuL6+Sf03wZHctEM2hkUV2upzhmNMka2zHuD29PNdB4P4tquCOL8MxqleRH3jWVDOUkTiA5p9jf1CqvElKX4e2YDxwPBJ6tOn9EWpqG/d6GQ2OYC1+o1RZPnFC4qm0e+pLWzDVvI9QhtFnG3qqr2Zdo+H9o+BGpp4/u1bTBsdVSk3yG2jmnm020+StbmkOLeawMsHGVFmDFE3yut1Q3iztkseE2J13CSWAaNFgdUqrDR819Etj7JASmsJOguvYGQLIz6gWSC0sOtwUZjXRm+9uoW5W59SAD1UnBaKXPIAd0fHYS2eCpG0sdj/AKgmEAdHO02PspzE4xU4GZAPFA9rvY6FA+JBx5TRFRSAe6dCIEAlRscgOikqWTNEATqNF01xwdCrBSMLNL2shZ/NO5Whw190ycLEg7hdF2dONM3vqklmtwt5DlDrGx5pQPVQ1zwCmNp4DCBI2+U/RKjaJW5mk+YT1uV7cp1G2qazQOpZM7L92d/JHdhNGNpwD/CdQ0d9X+wRKeNsrQ4G6dsiPyVec2OhFdkdV0ZOoFimD2OjJaVPysJadL9FG1EYk1Hx9OqLHOwMkPaGLTYq1cE8T1nDGOUWLYfL3dXRyiVh5O6tPkRcH1VVO6NTSmNwOyOcbQEJUz3ni1fQdrXZVU1GH2cyvpXFrDq6CdniynzDhb/leP6yAVTsxGWXYg9enzXQfs79pw4U4gGDYjPbCcVc2NxcfDBNsx/kD8J9jyTLtV4Ydwp2h4rQMYBTTuFZA0jQxyXvb0dcKjOLR6Lw+VKbxv2VHCnFrix99NCDy91PxsBbZp0/lQ0TQx+ZpIvoWuHL+VM0hcWtAuSeX9FRynudG6VDiMBjgDcC1vfqu+9gnFf3ugn4dqZLzUn4tPc6mMnUex/dcDeC3bUbgqc4M4hl4ax2ixaIuvTyAyNH52HRw+V0qEqdiPM6L91p5RXa5R6Q4gphFiMp/LMBIPXY/UfVQcbvutQWfldsrZjjYq7C4cRp3CRjQJGuH5o3W1/ZVWuZmjDwNRst7TyuKaPl8uqPPHbrwc2nxueeCO0da01MdhoH/mH/AL1XEqaTuJwQTYFet+1fDP7U4bZVsAMlK8Pv0adCvKvEVEKLEXuYLMlOYW5HmEb4m4/Zz5ipFwYRimFxytN3MFioWaDunkW0Tjgus7xslM42JBIvzTyupzHI9jhe2vqFRb2ScSz/ACipDan/ABYweY8JR447PJGyBReCoyH4XBSP3cEm7rc7IZPkJKxMlMK2llgO72Fv9Pqq9SudUUVGx180Mpa7ysFbYIybOGhBUG+nbT4hXR5bZZe9aPJwumYpfFoCcadnVPs44jJQdosVM19oq+llhe3qWjO36hepntJdqvBzsSlwKOmqqeokpqxj+8ikjdZzXAEgg/JeuexrtG/+SODIMQqcjcTpXfd61jdAXgaPA5Bw19bqhq8Tr8hKlzRc3Rm+gCW7QBKdoVpxAGqopDbPm22INGouUpsoi3j9wksmDrB3xDn1R3xhzSHAEW35heuMo2yWJ5+IG/KyJka/UahRz6eRnjj1aOY3HqtxVT2OuXE+q44eOpwbG1vQp9TT5qKogeb54iPfcJpHMyVt2lIlldTnMChcbJi6I6M5SCn9O/LJYnR2ijybJ1E69iOSKiEx/q4X9k3nAJuEVkge0kWuDeyQ+5Gm3NLSpjJStAhsASbX2CUyxNiL6ddlpzRoRe22qJDa/ntspYEVyajBzeWycNIe0sdqDoQhbDXa6LHYW21XDWqQKkc6irBE4h0TtWlTrowRmaVD1UAnhsNHjVp805wjEhKwMlNnjQjzScsL5RMJemOXWBsBfmmVVAH+JoFjqVJTRMcOR/hAcwgWKVF0MkV+endEeVikNCl6um7xvIpg+M2+G1tArCdoRKPsdYfJZ2UrqXEXFb+MuDsGxOteZcW4dd9zq3n4p6OTRkh6lrhY+oPNcupmd20aalTmE1fcOde5imY6GZn62O3H7H1AQ5IFjTZnCal7RMZG5rtIdGDo7YeSkqd2Vrb3BGtwoDBJe8jko5H/AI9M7KDtmbyKmYSWeFwu3p/ssnNGpUz6XocyyY1NeySJzsABFj+3VLiPdm4Nr8kGEtykA6HchEJzae3uqbNRco9EdinEIx/hObBql+aegHc2O5icCWH2Nx7J+6InvIXaOBIHquK9mXFn/SvF9HVSvLaSoP3Wo10DXGwcfR1iu941GyHFnFu0gDlsaDJcdrPmvndD+21Ta/jLlFSxKgFfRVNC8ACaNzdeR/5Xk7jTBZ6eoqoJIyJKdxOvLXZeuMexSlwh95CHzu1bE06+p6BOuEsBpZsPrKiqwvD3MxN/eS00kQfn6FxN9fLYKNVroQmkuWjOx4JbW30zw5w/WOoq+N+1jzV/xKASRtnAuLX9l6Gx37PvZ3jUhlbhdRg87tc9FKWNv/pN2/KygMS+zzUsp+7wnHYahjRYNq4y11v9Tb/squXV48jUkHig4razz+Wd1IHbhpvfyUhU1MFEQZZgxx1a0aud6AalWrHexzjTBQ/vcFmqYRcCWlIlFvQa/RVU0ctIfx6V1NMdHtewtdfbW+qZDJF8slp+hqJ66sdlgaaKE7ySAGRw8m8vdArY201Wx73OLDFZz3G5OU8z11UmDl5KL4ojdJhBlYbd28Bx6A6fvZOhPdJICapWVjGsSkrqxu4aCA1vQL0L9lfE4cNxzFcOqKuKA1lNEYo5Hhplka86NB3NiV59wjDXTSCqm0iYdCfzlTGJ1MmH0Ynje9k3es7t7TYsI1uD1Ts8FNLGhGN1cmfQFw6ocpsNdlRuxPjeo474Cpa6ufnr6ZxpaiT/AO45oBDj5kEX81epGjLY6rBlFxbTLSdnzVs3kdk6pZr2jefQppsjwwl7QSvVNWZaHhpzmzMNnfum0tOHmwaI5OnIp/Dq3X2S5Io5mBkjdtnDcJalTpjHG+iGGeB9iC0jcJxO4z0+e22+qLNTOtkkOYD4Hj+UxLXMc5jtOqamLaEIsDrel0JY02N1wJIRnKT5iyWBpfleyC02ARGHVQwwhaHMsdCNQfNba0NaTcE7LV7hbJ8Fje9/ohaCTRjRm026IsbQLcyEJpIsRuNEKqqe7ZkZcFQg74EVdU/MWg5bdE1ZM5s3eDQneySSTz1WrIkhTlyTDap0sYcHG/W+yQaueIaPPvqmNHMYpAwnQp69tx5JEo7WPi9yMGLSWs9jT6JP3uOR1yAAm0sZYb8ihpioXJtEvFLCefun9K5rZRlcCDbnsVXIt+Y9EVs0kZ8Lzouk74OXHJaKovpKmHEmbAiOcD9PI/8AvkrJFKHNDm6Bw35KqYRXfeWGCps5kosVK4DUPY2agmN5Kd2XXfLyKz9TC1f0ew/T2r5/DJ8PosMHiJcNC1G1Lm3Fjsm9OQ3y990cSGZzYomuMjnBrWtFyT0ssuSo9tF0rYhztXNdqHaDW2Xku70HGNTXcM4TJNBKMYZTdzL3jdBlNmvPmRrZUfh3gyHB4f7VxqSKOSMZ7PIyU4HM9XfsqFxz2tSYm+TCeGnGnpXEtkrXHK+XrY/lb57lHhWWbccfC+zyPm9Zh1ElCKvb7OvcM4pwziHED/7Vx+kdUxv1jmcQJJOhcRlsOl11k91VRh4ijkjO0kTtLeoXz/jqJYP8OWQO5kOOqsfD3abxVww9poMVqIwCPCH6H1Gx+Sf/AKfFfxfJhTTnzZ7cYwtbaKZxH6ZBcJLg8fFCy/VjrLzvw19qKsYGw8Q4bBVAaGWH8J/0uD9F1Ph/tn4Qx8NbHin3OR20dY3KL/6hcKtk0k4gbWi5md8eomkYejxcD3Qayko8XiMeI4dR17CNpGNd+4RYp2zxiSIsljOofE4OafktGNrjfIL+WhVZxaZFL2UvF+yHgbErvbQ1OGSH81LIQ0f9puFTMb+zg2soqiLB+IY5BK2wbVRbG9wbt/ouyOhf+SVzPJ4zBAMcoP4lPHKP1ROsfkjjmnB2mdsTPLeO9gXaBhM8cho4sTpoje1DIHE2/wApsfoqPxNhlZAwUtbR1FJNG+/dzxuYenNe23Oey3d1UkJA0bO3T5plihNVTmLF8GpsTpiLEhokHyIVmPkZJpyQH7dPhHFvs+9pGBcHw1fDWNTuo31NSJoap/8Ag3LA3K4/l23Oi9JNeHMD2uDmOFwQbgjqFw7iDsb4D4ozuwmeXAK0/kaC6InzY7b2IV37I8J4h4SwWXh/iKqgq4aWT+4VcchcHRH8hvqLHYHkVGSePJ84vkBwlDho/9k=";
+const RABIT  = "https://darkoushi.com";
+/* ═══════════════════════════════════════ */
+
+/* ——— المعاجم المحلّية: نصوص كاملة تُجلب من مستودع مفتوح ——— */
+const MAAJIM = [
+  { id:"lisan",    siglum:"لس", name:"لسان العرب",   author:"ابن منظور",          when:"ت ٧١١هـ" },
+  { id:"maqayis",  siglum:"مق", name:"مقاييس اللغة", author:"ابن فارس",           when:"ت ٣٩٥هـ" },
+  { id:"mufradat", siglum:"مف", name:"المفردات",     author:"الراغب الأصفهاني",   when:"ت ٥٠٢هـ" },
+];
+const CDN  = "https://cdn.jsdelivr.net/gh/abuyahyo/mojam@main/data/";
+const RAW  = "https://raw.githubusercontent.com/abuyahyo/mojam/main/data/";
+
+const KHAZAIN = [
+  ["معجم الدوحة التاريخي","أقدم استعمال موثَّق للفظ", w => "https://www.dohadictionary.org/ar"],
+  ["الباحث العربي","الصحاح والقاموس المحيط", w => "http://www.baheth.info/all.jsp?term="+encodeURIComponent(w)],
+  ["المعاني","معاجم عربية ومترجمة", w => "https://www.almaany.com/ar/dict/ar-ar/"+encodeURIComponent(w)+"/"],
+  ["مكتبة الحَورَماني","تاج العروس ومعجم لين وغيرها", w => "https://arabiclexicon.hawramani.com/?s="+encodeURIComponent(w)],
+];
+
+const AMTHILA = ["كتب","سراب","همّ","رحم","فتن","نوى"];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm = w => w.replace(/[\u064B-\u0652\u0670\u0640\u06D6-\u06ED]/g,"")
+                   .replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ؤ/g,"و")
+                   .replace(/ئ/g,"ي").replace(/ة/g,"ه").trim();
+
+let hist = [];
+try { hist = JSON.parse(localStorage.getItem("jathr:hist") || "[]"); } catch(e){}
+const store = { maqayis:null, mufradat:null, lisanRoots:null, lisanChunks:{}, loading:null };
+const say = t => document.getElementById("status").textContent = t || "";
+
+async function getJSON(path){
+  try{
+    const r = await fetch(CDN + path);
+    if(r.ok) return await r.json();
+  }catch(e){}
+  const r2 = await fetch(RAW + path);
+  if(!r2.ok) throw new Error("تعذّر تنزيل " + path);
+  return await r2.json();
+}
+
+/* ——— تنزيل المعاجم مرّة واحدة ثم تبقى في ذاكرة الجهاز ——— */
+function loadMaajim(){
+  if(store.loading) return store.loading;
+  say("تُنزَّل المعاجم مرّة واحدة (نحو ٩ م.ب)…");
+  store.loading = (async () => {
+    const [mq, mf, lr] = await Promise.all([
+      getJSON("maqayis.json"),
+      getJSON("mufradat.json"),
+      getJSON("lisan/roots.json"),
+    ]);
+    store.maqayis  = index(mq);
+    store.mufradat = index(mf);
+    store.lisanRoots = new Map();
+    lr.forEach(([root, chunk, i]) => {
+      const k = norm(root);
+      if(!store.lisanRoots.has(k)) store.lisanRoots.set(k, []);
+      store.lisanRoots.get(k).push([chunk, i, root]);
+    });
+    say("");
+  })();
+  store.loading.catch(() => { store.loading = null; say("تعذّر تنزيل المعاجم — تحقّق من الاتصال."); });
+  return store.loading;
+}
+function index(arr){
+  const m = new Map();
+  arr.forEach(e => {
+    const k = norm(e.root || "");
+    if(!k) return;
+    if(!m.has(k)) m.set(k, []);
+    m.get(k).push(e);
+  });
+  return m;
+}
+async function lisanText(chunk, i){
+  if(!store.lisanChunks[chunk]){
+    say("يُقلّب لسان العرب…");
+    store.lisanChunks[chunk] = await getJSON("lisan/chunks/chunk_" + String(chunk).padStart(3,"0") + ".json");
+    say("");
+  }
+  return store.lisanChunks[chunk][i];
+}
+
+/* ——— ردّ الكلمة إلى جذرها ——— */
+const PRE = ["وال","بال","كال","فال","ال","لل","مست","يست","تست","نست","است","انت","ان","مت","يت","تت","نت","م","ي","ت","ن","س","و","ف","ب","ك","ل","ا"];
+const SUF = ["اتهما","اتها","اتهم","تهما","هما","كما","تها","تهم","ونا","انا","ات","ان","ون","ين","يه","ها","هم","هن","كم","كن","نا","تم","ت","ه","ك","ي","ا","ن","و"];
+
+// يشتقّ من الكلمة كل ما يحتمل أن يكون جذرًا، مع تكلفة لكل عملية: الأقلّ تكلفة أقرب إلى الصواب
+function derive(n){
+  const seen = new Map([[n, 0]]);
+  let frontier = [[n, 0]];
+  for(let round = 0; round < 4 && frontier.length; round++){
+    const next = [];
+    for(const [s, c] of frontier){
+      for(const p of PRE) if(s.startsWith(p) && s.length - p.length >= 3){
+        const t = s.slice(p.length), cc = c + (p.length === 1 ? 1.5 : p.length);
+        if((seen.get(t) ?? 1e9) > cc){ seen.set(t, cc); next.push([t, cc]); }
+      }
+      for(const x of SUF) if(s.endsWith(x) && s.length - x.length >= 3){
+        const t = s.slice(0, -x.length), cc = c + x.length;
+        if((seen.get(t) ?? 1e9) > cc){ seen.set(t, cc); next.push([t, cc]); }
+      }
+    }
+    frontier = next;
+  }
+  const out = new Map(seen);
+  const add = (t, c) => { if(t.length >= 3 && (out.get(t) ?? 1e9) > c) out.set(t, c); };
+  for(const [s, c] of seen){
+    for(const drop of ["اوي","ا","و","ي"])                     // حذف حروف العلّة
+      add([...s].filter(ch => !drop.includes(ch)).join(""), c + 0.5);
+    for(let i = 1; i <= 2; i++) if(s.length >= 4 && "تنوي".includes(s[i]||"")){   // حذف الحرف الزائد داخل الكلمة
+      const t = s.slice(0, i) + s.slice(i + 1);
+      add(t, c + 1);
+      add([...t].filter(ch => !"اوي".includes(ch)).join(""), c + 1.5);
+    }
+  }
+  return out;
+}
+const seq = (root, w) => { let j = 0; for(const c of w){ if(c === root[j]) j++; if(j === root.length) return true; } return false; };
+
+function roots(query){
+  const n = norm(query);
+  const keys = new Set([...store.lisanRoots.keys(), ...store.maqayis.keys(), ...store.mufradat.keys()]);
+  const found = [];
+  const push = k => { if(k && keys.has(k) && !found.includes(k)) found.push(k); };
+  push(n);
+  [...derive(n)].filter(([k]) => keys.has(k))
+    .sort((a, b) => a[1] - b[1] || (a[0].length === 3 ? -1 : 1) - (b[0].length === 3 ? -1 : 1))
+    .forEach(([k]) => push(k));
+  if(!found.length){
+    [...keys].filter(k => k.length >= 3 && k.length <= n.length && seq(k, n))
+      .sort((a, b) => b.length - a.length).slice(0, 4).forEach(push);
+  }
+  return found.slice(0, 4);
+}
+
+/* ——— المصادر الشبكية ——— */
+async function wikiOne(word, lang){
+  const url = "https://" + lang + ".wiktionary.org/w/api.php?action=parse&format=json"
+            + "&formatversion=2&origin=*&prop=text&redirects=1&page=" + encodeURIComponent(word);
+  const r = await fetch(url);
+  if(!r.ok) throw new Error("الخدمة ردّت بالخطأ " + r.status);
+  const j = await r.json();
+  if(j.error) return null;
+  const html = j?.parse?.text;
+  if(!html) return null;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  doc.querySelectorAll("table, style, script, audio, .mw-editsection, .navbox, .thumb,"
+    + " sup.reference, ol.references, .mw-references-wrap, .noprint, .metadata, .toc")
+    .forEach(n => n.remove());
+  const lines = [];
+  doc.querySelectorAll("h2, h3, h4, p, li, dd").forEach(n => {
+    const t = n.textContent.replace(/\s+/g," ").trim();
+    if(!t || t.length < 2) return;
+    const line = /^H[234]$/.test(n.tagName) ? "\n▪ " + t : (n.tagName === "P" ? t : "— " + t);
+    if(!lines.includes(line)) lines.push(line);
+  });
+  let text = lines.join("\n").replace(/\n{3,}/g,"\n\n").trim();
+  if(text.length < 12) return null;
+  if(text.length > 6000) text = text.slice(0,6000) + " …";
+  return { text, link:"https://" + lang + ".wiktionary.org/wiki/" + encodeURIComponent(word) };
+}
+async function wiktionary(word){
+  const t = norm(word);
+  let err = null;
+  try { const ar = await wikiOne(t,"ar"); if(ar) return ar; } catch(e){ err = e; }
+  try { const en = await wikiOne(t,"en"); if(en) return en; } catch(e){ if(!err) err = e; }
+  if(err) throw err;
+  return null;
+}
+async function quran(word){
+  const t = norm(word);
+  let err = null;
+  try{
+    const r = await fetch("https://api.quran.com/api/v4/search?q="+encodeURIComponent(t)+"&size=3&language=ar");
+    if(r.ok){
+      const res = (await r.json())?.search?.results || [];
+      if(res.length) return res.slice(0,3).map(x => ({
+        nass:(x.text||"").replace(/<[^>]+>/g,""), masdar:"الآية " + x.verse_key }));
+    } else err = new Error("خطأ " + r.status);
+  }catch(e){ err = e; }
+  try{
+    const r2 = await fetch("https://api.alquran.cloud/v1/search/"+encodeURIComponent(t)+"/all/quran-simple-clean");
+    if(r2.ok){
+      const m = (await r2.json())?.data?.matches || [];
+      return m.slice(0,3).map(x => ({
+        nass:x.text, masdar:(x.surah?.name||"") + " " + x.surah?.number + ":" + x.numberInSurah }));
+    }
+  }catch(e){}
+  if(err) throw err;
+  return [];
+}
+
+/* ——— إعراب القرآن: بيانات مشروع Quranic Arabic Corpus ——— */
+const CORPUS = "https://cdn.jsdelivr.net/gh/cltk/arabic_morphology_quranic-corpus@master/quranic-corpus-morphology-0.4.txt";
+const CORPUS2 = "https://raw.githubusercontent.com/cltk/arabic_morphology_quranic-corpus/master/quranic-corpus-morphology-0.4.txt";
+const BW = {"'":"ء","|":"آ",">":"أ","&":"ؤ","<":"إ","}":"ئ","A":"ا","b":"ب","p":"ة","t":"ت","v":"ث",
+  "j":"ج","H":"ح","x":"خ","d":"د","*":"ذ","r":"ر","z":"ز","s":"س","$":"ش","S":"ص","D":"ض","T":"ط",
+  "Z":"ظ","E":"ع","g":"غ","_":"ـ","f":"ف","q":"ق","k":"ك","l":"ل","m":"م","n":"ن","h":"ه","w":"و",
+  "Y":"ى","y":"ي","F":"ً","N":"ٌ","K":"ٍ","a":"َ","u":"ُ","i":"ِ","~":"ّ","o":"ْ","^":"ٓ","#":"ٔ",
+  "`":"ٰ","{":"ٱ"};
+const bw = t => [...t].map(c => BW[c] ?? "").join("");
+const POS = {N:"اسم",PN:"اسم علم",ADJ:"صفة",V:"فعل",PRON:"ضمير",DEM:"اسم إشارة",REL:"اسم موصول",
+  T:"ظرف زمان",LOC:"ظرف مكان",P:"حرف جرّ",CONJ:"حرف عطف",SUB:"حرف مصدري",ACC:"حرف نصب",
+  NEG:"حرف نفي",INTG:"حرف استفهام",COND:"حرف شرط",CERT:"حرف تحقيق",EXP:"حرف استثناء",
+  RES:"حرف حصر",EMPH:"لام التوكيد",VOC:"حرف نداء",INL:"حروف مقطّعة",DET:"أداة تعريف",
+  PRP:"لام التعليل",AMD:"حرف استئناف",ANS:"حرف جواب",AVR:"حرف ردع",CAUS:"حرف سببية",
+  CIRC:"واو الحال",COM:"واو المعية",EQ:"حرف تسوية",EXH:"حرف تحضيض",EXL:"حرف تفصيل",
+  FUT:"حرف استقبال",INC:"حرف ابتداء",INT:"حرف تفسير",PREV:"حرف كفّ",PRO:"حرف نهي",
+  REM:"حرف استئناف",RET:"حرف استدراك",RSLT:"حرف جواب",SUP:"حرف زائد",SUR:"حرف فجاءة"};
+const CASEA = {NOM:"مرفوع",ACC:"منصوب",GEN:"مجرور"};
+const MOODA = {IND:"مرفوع",SUBJ:"منصوب",JUS:"مجزوم"};
+const NUMA = {MS:"مفرد مذكّر",FS:"مفرد مؤنّث",MD:"مثنّى مذكّر",FD:"مثنّى مؤنّث",MP:"جمع مذكّر",
+  FP:"جمع مؤنّث",M:"مذكّر",F:"مؤنّث",P:"جمع",D:"مثنّى",S:"مفرد"};
+const FORMA = {"(I)":"الأول","(II)":"الثاني","(III)":"الثالث","(IV)":"الرابع","(V)":"الخامس",
+  "(VI)":"السادس","(VII)":"السابع","(VIII)":"الثامن","(IX)":"التاسع","(X)":"العاشر",
+  "(XI)":"الحادي عشر","(XII)":"الثاني عشر"};
+const DAMIR = {"1S":"أنا","1P":"نحن","2MS":"أنت","2FS":"أنتِ","2MD":"أنتما","2MP":"أنتم","2FP":"أنتنّ",
+  "3MS":"هو","3FS":"هي","3MD":"هما","3FD":"هما","3MP":"هم","3FP":"هنّ"};
+const PREFA = {"Al+":"«ال» التعريف","w:CONJ+":"واو العطف","f:CONJ+":"فاء العطف","l:P+":"لام الجرّ",
+  "bi+":"باء الجرّ","ka+":"كاف التشبيه","li+":"لام الجرّ","s:FUT+":"سين الاستقبال","la+":"لام التوكيد",
+  "w:P+":"واو القسم","ta+":"تاء القسم","l:PRP+":"لام التعليل","wa+":"واو العطف","fa+":"فاء العطف",
+  "w:REM+":"واو الاستئناف","f:REM+":"فاء الاستئناف","w:CIRC+":"واو الحال","l:EMPH+":"لام التوكيد",
+  "s:EMPH+":"سين","a:INTG+":"همزة الاستفهام","ya:VOC+":"يا النداء"};
+
+function irabOf(feats){
+  const ps = feats.split("|"), kind = ps[0], d = {};
+  if(kind === "PREFIX") return PREFA[ps[1]] || ("زائدة (" + (ps[1]||"").replace("+","") + ")");
+  for(const f of ps){
+    if(f.startsWith("POS:")) d.pos = f.slice(4);
+    else if(CASEA[f]) d.cas = CASEA[f];
+    else if(f.startsWith("MOOD:")) d.mood = MOODA[f.slice(5)] || f.slice(5);
+    else if(f === "PERF") d.tense = "ماضٍ";
+    else if(f === "IMPF") d.tense = "مضارع";
+    else if(f === "IMPV") d.tense = "أمر";
+    else if(f === "PASS") d.voice = "مبني للمجهول";
+    else if(f === "ACT") d.act = 1;
+    else if(f === "PCPL") d.pcpl = 1;
+    else if(f === "VN") d.vn = 1;
+    else if(f === "DEF") d.def = "معرّف";
+    else if(f === "INDEF") d.def = "منكّر";
+    else if(NUMA[f]) d.num = NUMA[f];
+    else if(FORMA[f]) d.form = FORMA[f];
+    else if(f.startsWith("ROOT:")) d.root = bw(f.slice(5));
+    else if(f.startsWith("PRON:")) d.pron = f.slice(5);
+    else if(/^[123][MF]?[SDP]$/.test(f)) d.person = f;
+  }
+  if(kind === "SUFFIX")
+    return d.pron ? "ضمير متصل (" + (DAMIR[d.pron] || d.pron) + ")"
+                  : (d.person ? "لاحقة (" + (DAMIR[d.person] || d.person) + ")" : "لاحقة");
+  let base = POS[d.pos] || d.pos || "";
+  if(d.pcpl) base = d.act ? "اسم فاعل" : "اسم مفعول";
+  if(d.vn) base = "مصدر";
+  const out = [base];
+  if(d.tense) out.push(d.tense);
+  if(d.voice) out.push(d.voice);
+  if(d.form) out.push("من الوزن " + d.form);
+  if(d.cas) out.push(d.cas);
+  if(d.mood) out.push(d.mood);
+  if(d.def) out.push(d.def);
+  if(d.num) out.push(d.num);
+  if(d.person && d.pos === "V") out.push("لـ" + (DAMIR[d.person] || d.person));
+  if(d.pron) out.push("ضميره " + (DAMIR[d.pron] || d.pron));
+  return out.filter(Boolean).join("، ");
+}
+
+async function loadCorpus(){
+  if(store.corpus) return store.corpus;
+  if(store.corpusLoading) return store.corpusLoading;
+  say("يُنزَّل إعراب القرآن مرّة واحدة (٦ م.ب)…");
+  store.corpusLoading = (async () => {
+    let txt = null;
+    for(const u of [CORPUS, CORPUS2]){
+      try { const r = await fetch(u); if(r.ok){ txt = await r.text(); break; } } catch(e){}
+    }
+    if(!txt) throw new Error("تعذّر تنزيل بيانات الإعراب");
+    const verses = new Map();     // "s:v" → [[w, formAr, feats], …]
+    const byRoot = new Map();     // جذر → ["s:v:w", …]
+    for(const line of txt.split("\n")){
+      if(line[0] !== "(") continue;
+      const [loc, form, tag, feats] = line.replace(/\r$/,"").split("\t");
+      if(!feats) continue;
+      const sv = loc.slice(1, -1).split(":");        // (سورة:آية:كلمة:مقطع)
+      const key = sv[0] + ":" + sv[1];
+      if(!verses.has(key)) verses.set(key, []);
+      verses.get(key).push([+sv[2], +sv[3], bw(form), feats]);
+      const m = feats.match(/ROOT:([^|]+)/);
+      if(m){
+        const r = norm(bw(m[1]));
+        const wk = key + ":" + sv[2];
+        if(!byRoot.has(r)) byRoot.set(r, []);
+        const arr = byRoot.get(r);
+        if(arr[arr.length-1] !== wk) arr.push(wk);
+      }
+    }
+    try{
+      const r = await fetch("https://api.quran.com/api/v4/chapters?language=ar");
+      if(r.ok){
+        store.suras = {};
+        ((await r.json()).chapters || []).forEach(c => store.suras[c.id] = c.name_arabic);
+      }
+    }catch(e){}
+    store.corpus = { verses, byRoot };
+    say("");
+    return store.corpus;
+  })();
+  store.corpusLoading.catch(() => { store.corpusLoading = null; say(""); });
+  return store.corpusLoading;
+}
+
+function occHTML(wk, c){
+  const [s, v, w] = wk.split(":");
+  const segs = (c.verses.get(s + ":" + v) || []).slice()
+                 .sort((a,b) => a[0] - b[0] || a[1] - b[1]);   // ترتيب الكلمات ثم مقاطعها
+  const target = segs.filter(x => x[0] === +w);
+  const nameSura = (store.suras && store.suras[+s]) ? store.suras[+s] : ("سورة " + s);
+  // نصّ الآية مع تمييز الكلمة
+  const byWord = new Map();
+  segs.forEach(([wi, , form]) => byWord.set(wi, (byWord.get(wi) || "") + form));
+  const ayah = [...byWord.entries()].sort((a,b) => a[0]-b[0])
+    .map(([wi, form]) => wi === +w ? '<span class="hl">' + esc(form) + '</span>' : esc(form)).join(" ");
+  const kalima = target.map(x => x[2]).join("");
+  return '<div class="occ"><div class="ref">' + esc(nameSura) + " — الآية " + esc(v) + '</div>'
+    + '<p class="ayah">' + ayah + '</p>'
+    + '<div class="irab"><u>' + esc(kalima) + '</u> — '
+    + target.map(x => irabOf(x[3])).filter(Boolean).join(" + ") + '</div></div>';
+}
+
+async function showIrab(root, limit){
+  const box = document.getElementById("ibox");
+  box.innerHTML = '<p class="none">يُقلَّب المصحف…</p>';
+  let c;
+  try { c = await loadCorpus(); }
+  catch(e){ box.innerHTML = '<p class="none">تعذّر تنزيل بيانات الإعراب — تحقّق من الاتصال.</p>'; return; }
+  const all = c.byRoot.get(root) || [];
+  if(!all.length){ box.innerHTML = '<p class="none">لم يقع هذا الجذر في القرآن.</p>'; return; }
+  const n = limit || 8;
+  box.innerHTML = '<p class="none">وقع هذا الجذر في ' + all.length + ' موضعًا. '
+      + 'هذه أوّلها بإعرابها:</p>'
+    + all.slice(0, n).map(wk => occHTML(wk, c)).join("")
+    + (all.length > n ? '<button class="more" id="moreIrab">أظهر مواضع أكثر</button>' : '')
+    + '<div class="note">بيانات الإعراب من '
+    + '<a href="http://corpus.quran.com" target="_blank" rel="noreferrer">Quranic Arabic Corpus</a> '
+    + '(تأليف Kais Dukes، رخصة GPL)، والنصّ القرآني من مشروع تنزيل.</div>';
+  const mb = document.getElementById("moreIrab");
+  if(mb) mb.onclick = () => showIrab(root, n + 12);
+}
+
+/* ——— العرض ——— */
+let current = { term:"", root:"", cands:[] };
+
+function cardHTML(m, text){
+  return '<article class="card"><div class="gutter">'+m.siglum+'</div><div class="body">'
+    + '<div class="src"><b>'+m.name+'</b><i>'+m.author+' — '+m.when+'</i>'
+    + '<span class="tag">نصّ المعجم</span></div>'
+    + '<p class="nass clip" data-full="1">'+esc(text)+'</p>'
+    + '<button class="more">اعرض النصّ كاملًا</button></div></article>';
+}
+
+async function show(root){
+  current.root = root;
+  const out = document.getElementById("out");
+  let html = '<section class="head"><div class="rule"></div><div class="headin"><h1>'
+           + esc(root.split("").join(" ")) + '</h1>'
+           + (norm(current.term) !== root ? '<p class="kal">'+esc(current.term)+'</p>' : '')
+           + '</div><div class="rule"></div></section>';
+
+  if(current.cands.length > 1){
+    html += '<div class="chips" style="margin-top:.9rem"><span class="sub">جذور محتملة:</span>'
+          + current.cands.map(k => '<button class="word'+(k===root?' on':'')+'" data-root="'+k+'">'
+            + esc(k) + '</button>').join("") + '</div>';
+  }
+
+  html += '<h2 class="sect">في المعاجم</h2>';
+  let any = false;
+  for(const m of MAAJIM){
+    let text = null;
+    if(m.id === "lisan"){
+      const hit = (store.lisanRoots.get(root) || [])[0];
+      if(hit){ const e = await lisanText(hit[0], hit[1]); text = e?.text || null; }
+    } else {
+      const e = (store[m.id].get(root) || [])[0];
+      text = e?.text || null;
+    }
+    if(text){ any = true; html += cardHTML(m, text); }
+    else html += '<article class="card"><div class="gutter">'+m.siglum+'</div><div class="body">'
+      + '<div class="src"><b>'+m.name+'</b><i>'+m.author+'</i></div>'
+      + '<p class="none">لا مادّة لهذا الجذر في هذا المعجم.</p></div></article>';
+  }
+  if(!any) html += '<p class="none">لم يُعثر على الجذر في المعاجم الثلاثة. جرّب صياغة الجذر مجرّدًا: «كتب» بدل «مكتوب».</p>';
+
+  html += '<h2 class="sect">إعراب مواضع الجذر في القرآن</h2><div id="ibox">'
+        + '<button class="more" id="irabBtn">أظهر الإعراب — يُنزَّل ٦ م.ب مرّة واحدة</button></div>'
+        + '<h2 class="sect">شواهد من القرآن</h2><div id="qbox"><p class="none">…</p></div>'
+        + '<h2 class="sect">ويكاموس</h2><div id="wbox"><p class="none">…</p></div>'
+        + '<h2 class="sect">خزائن أخرى</h2><div class="khaz">'
+        + KHAZAIN.map(([n,note,u]) => '<a target="_blank" rel="noreferrer" href="'+u(norm(current.term))+'">'
+          + '<b>'+n+' ↗</b><span>'+note+'</span></a>').join("") + '</div>'
+        + '<div class="note">نصوص لسان العرب ومقاييس اللغة والمفردات في الملك العام، '
+        + 'وهذه النسخ الرقمية من مشروع <a href="https://github.com/abuyahyo/mojam" target="_blank" rel="noreferrer">mojam</a> المفتوح. '
+        + 'الصحاح والقاموس المحيط وتاج العروس والمعجم الوسيط لا تتيح واجهة برمجية، فوصلناك بخزائنها أعلاه.</div>';
+
+  out.innerHTML = html;
+  wire(out);
+  const ib = document.getElementById("irabBtn");
+  if(ib) ib.onclick = () => showIrab(root);
+
+  quran(current.term).then(a => {
+    document.getElementById("qbox").innerHTML = a.length
+      ? a.map(x => '<div class="aya"><p>'+esc(x.nass)+'</p><cite>'+esc(x.masdar)+'</cite></div>').join("")
+      : '<p class="none">لم يقع هذا اللفظ بهذه الصيغة في القرآن.</p>';
+  }, e => document.getElementById("qbox").innerHTML =
+      '<p class="none">تعذّر البحث في القرآن — '+esc(e.message||"")+'</p>');
+
+  wiktionary(current.term).then(w => {
+    document.getElementById("wbox").innerHTML = w
+      ? '<article class="card"><div class="gutter">وك</div><div class="body">'
+        + '<div class="src"><b>ويكاموس</b><span class="tag">نصّ المصدر</span></div>'
+        + '<p class="nass clip">'+esc(w.text)+'</p><button class="more">اعرض المدخل كاملًا</button>'
+        + '<div style="margin-top:.5rem"><a class="out" target="_blank" rel="noreferrer" href="'
+        + w.link + '">افتح الصفحة ↗</a></div></div></article>'
+      : '<p class="none">لا مدخل لهذه الكلمة في ويكاموس.</p>';
+    wire(document.getElementById("wbox"));
+  }, e => document.getElementById("wbox").innerHTML =
+      '<p class="none">تعذّر الوصول إلى ويكاموس — '+esc(e.message||"")+'</p>');
+}
+
+function wire(scope){
+  scope.querySelectorAll(".more").forEach(b => b.onclick = () => {
+    const p = b.previousElementSibling;
+    p.classList.toggle("clip");
+    b.textContent = p.classList.contains("clip") ? "اعرض النصّ كاملًا" : "اطوِ النصّ";
+  });
+  scope.querySelectorAll("[data-root]").forEach(b => b.onclick = () => show(b.dataset.root));
+}
+
+async function run(word){
+  const term = (word ?? document.getElementById("q").value).trim();
+  if(!term) return;
+  document.getElementById("q").value = term;
+  document.getElementById("q").blur();
+  document.getElementById("hint").hidden = true;
+  const out = document.getElementById("out");
+  out.innerHTML = '<div class="load naskh">يُقَلِّب الصفحات…</div>';
+  current = { term, root:"", cands:[] };
+
+  try { await loadMaajim(); }
+  catch(e){ out.innerHTML = '<p class="none">تعذّر تنزيل المعاجم. تحقّق من الاتصال ثم أعد المحاولة.</p>'; return; }
+
+  current.cands = roots(term);
+  if(!current.cands.length){
+    out.innerHTML = '<p class="none">لم أهتدِ إلى جذر هذه الكلمة. اكتب الجذر مجرّدًا من الزوائد، مثل «كتب» أو «سرب».</p>';
+    return;
+  }
+  await show(current.cands[0]);
+
+  hist = [term, ...hist.filter(x => x !== term)].slice(0,12);
+  try { localStorage.setItem("jathr:hist", JSON.stringify(hist)); } catch(e){}
+  drawHist();
+}
+
+function drawHist(){
+  const box = document.getElementById("histbox"), el = document.getElementById("hist");
+  box.hidden = hist.length === 0;
+  el.innerHTML = hist.map(w => '<button class="word">'+esc(w)+'</button>').join("");
+  [...el.children].forEach(b => b.onclick = () => run(b.textContent));
+}
+
+(function(){
+  const el = document.getElementById("sign");
+  const ism = esc(ISMI);
+  el.innerHTML = '<img src="'+SURATI+'" alt="'+ism+'" id="sura" /><div><b>'
+    + (RABIT ? '<a href="'+RABIT+'" target="_blank" rel="noreferrer">'+ism+'</a>' : ism)
+    + '</b><span>'+esc(WASFI)+'</span></div>';
+  document.getElementById("sura").onerror = function(){
+    const d = document.createElement("div");
+    d.className = "fallback"; d.textContent = ISMI.trim().charAt(0) || "ج";
+    this.replaceWith(d);
+  };
+})();
+
+document.getElementById("amthila").innerHTML = AMTHILA.map(w => '<button class="word">'+w+'</button>').join("");
+[...document.getElementById("amthila").children].forEach(b => b.onclick = () => run(b.textContent));
+document.getElementById("go").onclick = () => run();
+document.getElementById("q").addEventListener("keydown", e => { if(e.key === "Enter") run(); });
+drawHist();
+const qp = new URLSearchParams(location.search).get("q");
+if(qp) run(qp);
+setTimeout(() => loadMaajim().catch(()=>{}), 1500);   // تنزيل مبكّر ليكون البحث فوريًّا
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
