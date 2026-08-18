@@ -1,11 +1,11 @@
-/* ══════════ بُنيان — ترويسة موحَّدة، بنّيّ ذهبيّ صريح، لكل الصفحات ══════════ */
+/* ══════════ بُنيان — ترويسة موحَّدة، أخضر زمرّديّ (لون «افتح الآية») ══════════ */
 
 header.grand{
-  background: linear-gradient(180deg, #93783E 0%, #7C6430 100%);
+  background: linear-gradient(180deg, #17685C 0%, #0F544C 100%);
   color: #FFFFFF;
   padding: calc(1.7rem + env(safe-area-inset-top)) 1.2rem 1.15rem;
-  border-bottom: 3px solid #5C4A20;
-  box-shadow: 0 3px 14px rgba(60,45,15,.28);
+  border-bottom: 3px solid #B08A32;
+  box-shadow: 0 3px 14px rgba(15,84,76,.3);
   position: sticky;
   top: 0;
   z-index: 9;
@@ -29,14 +29,14 @@ header.grand .logo{
 header.grand .sub{
   font-size: .84rem;
   font-weight: 700;
-  color: #FFF6E0;
+  color: #E3F2ED;
   letter-spacing: .14em;
   margin-top: .2rem;
 }
 header.grand .rule{
   width: 5.5rem;
   height: 2px;
-  background: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.5);
   margin: .7rem auto 0;
   position: relative;
 }
@@ -46,8 +46,8 @@ header.grand .rule::before{
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
-  background: #86693A;
-  color: #FFFFFF;
+  background: #135D53;
+  color: #E9C25E;
   font-size: .6rem;
   padding: 0 .5rem;
 }
@@ -63,7 +63,7 @@ header.grand .hd-nav a{
   font-weight: 700;
   color: #FFFFFF;
   text-decoration: none;
-  border-bottom: 2px solid rgba(255,255,255,.55);
+  border-bottom: 2px solid rgba(233,194,94,.7);
   padding: .2rem 0;
   min-height: 24px;
   display: inline-flex;
@@ -71,11 +71,11 @@ header.grand .hd-nav a{
   transition: border-color .15s, opacity .15s;
 }
 header.grand .hd-nav a:hover{
-  border-bottom-color: #FFFFFF;
+  border-bottom-color: #E9C25E;
   opacity: .9;
 }
 header.grand .hd-nav .count{
-  color: #FFF6E0;
+  color: #E3F2ED;
   font-weight: 700;
   font-size: .8rem;
   display: inline-flex;
@@ -86,7 +86,7 @@ header.grand .tagline{
   display: block;
   font-size: .76rem;
   font-weight: 600;
-  color: #F3E6C4;
+  color: #CFE6DE;
   margin-top: .75rem;
   line-height: 1.8;
   max-width: 34rem;

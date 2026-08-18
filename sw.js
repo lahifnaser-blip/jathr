@@ -1,4 +1,4 @@
-const CACHE = "jathr-v6";
+const CACHE = "jathr-v7";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png",
   "./theme.css", "./share-print-pdf.js", "./mukhtabar.html", "./bunyan.html"];
 
