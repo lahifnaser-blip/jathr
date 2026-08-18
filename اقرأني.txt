@@ -1,0 +1,24 @@
+ملفّات تطبيق جَذْر / بُنيان — ارفعها كلّها إلى مستودع jathr
+
+المطلوب في جذر المستودع (لا داخل مجلّد):
+  index.html            المعاجم
+  mukhtabar.html        الإعراب التفاعليّ + الشجرة + البحث النحويّ
+  bunyan.html           محرِّر طبقة المحذوف والمقدَّر
+  sw.js                 التخزين للعمل بلا إنترنت
+  manifest.webmanifest  بيان التطبيق
+  icon-192.png
+  icon-512.png
+  tree/                 مجلّد فيه ١١٤ ملفًّا (شجرة الإعراب، ملفّ لكل سورة)
+
+خطوات الرفع:
+  ١. في المستودع: Add file ← Upload files
+  ٢. حدّد الملفّات السبعة ومعها مجلّد tree كاملًا، واسحبها دفعة واحدة
+  ٣. Commit changes
+  ٤. احذف من المستودع أي ملفّ زائد: index-2.html و sw-2.js و Quranic.csv.zip
+
+بعد دقيقتين:
+  https://lahifnaser-blip.github.io/jathr/               المعاجم
+  https://lahifnaser-blip.github.io/jathr/mukhtabar.html  المختبر
+  https://lahifnaser-blip.github.io/jathr/bunyan.html     المحرِّر
+
+للتأكّد من عمل الشجرة: افتح المختبر ← ١:١ ← «أظهر شجرة الإعراب».
